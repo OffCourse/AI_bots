@@ -2,6 +2,8 @@
 
 const tf = require('@tensorflow/tfjs-node')
 
+const model = tf.sequential();
+
 let iterations, rows, columns, playingGrid, savedGrid, tnsr;
 
 setupGame();
@@ -146,4 +148,32 @@ function updateGrid(grid) {
     for (var i = 0; i < grid.length; i++) {
         grid[i] = gridClone[i].slice();
     }
+}
+
+function configModel(){
+    const config_hidden_one = {
+        inputShape:[2],
+        activation:'sigmoid',
+        units:4
+    }
+
+    const config_output = {
+        activation:'sigmoid',
+        units:2
+    }
+
+    const hidden_one = tf.layers.dense(config_hidden_one);
+    const output = tf.layers.dense(config_output);
+
+    model.add(hidden_one);
+    model.add(output);
+
+    const config = {
+        optimizer:tf.train.sgd(0.1),
+        loss:'meanSquaredError'
+    }
+
+    model.compile(config);
+
+    console.log('model is ready to be trained');
 }
