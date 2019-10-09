@@ -2,12 +2,25 @@ const Post = require("./Post");
 
 var foodTrucks;
 var posts;
+var people;
 
 // getPostByTag("Space");
 // getAllPosts();
 // createPost(5, ["Space", "Spaceship"], "No oxygen life");
 
-Post.createPerson(2, "autobiografie", 1, -1, false, parseArray(["#hashtag", "#poesjes"]), parseArray(""))
+createUser(1, "boring bio", 0, 0, false, ["tag"], ["comment"]);
+getAllUsers();
+
+
+async function createUser(id, biografie, aantalFollows, aantalFollowers, bedrijf, tags, comments) {
+    await Post.createUser(id, biografie, aantalFollows, aantalFollowers, bedrijf, parseArray(tags), parseArray(comments));
+}
+
+async function getAllUsers() {
+    allUsers = await Post.getAllUsers();
+    allUsers = people.data.data.allUsers.data;
+    console.log(allUsers);
+}
 
 async function getPostByTag(tag) {
     foodTrucks = await Post.getPostByTag(tag);
@@ -15,7 +28,7 @@ async function getPostByTag(tag) {
 }
 
 async function getAllPosts() {
-    posts = await Post.getAllData();
+    posts = await Post.getAllPosts();
     console.log(posts.data.data.allPosts.data);
 }
 
