@@ -22,6 +22,41 @@ exports.createPost = async (id, tags, text) => {
     }));
 }
 
+exports.createPerson = async (id, biografie, aantalFollows, aantalFollowers, bedrijf, tags, comments) => {
+    console.log(comments)
+    return await Axios({
+        url: 'https://graphql.fauna.com/graphql',
+        method: 'post',
+        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
+        data: {
+            query: `mutation createPerson {
+                createPerson(data: { `+
+                    `id: ` + id + `, `+
+                    `biografie: "` + biografie + `", `+
+                    `aantalFollows: ` + aantalFollows + `, `+
+                    `aantalFollowers: ` + aantalFollowers + `, `+
+                    `bedrijf: ` + bedrijf + `, `+
+                    `tags: [` + tags + `], `+
+                    `comments: [` + comments + `] `+
+                `}) {
+                    id
+                    biografie
+                    aantalFollows
+                    aantalFollowers
+                    bedrijf
+                    tags
+                    comments
+                }
+              }
+              `
+        }
+    }).then((result) => {
+        console.log(result.data);
+    }).catch((error => {
+        console.log(error);
+    }));
+}
+
 exports.getAllData = async () => {
     return await Axios({
         url: 'https://graphql.fauna.com/graphql',

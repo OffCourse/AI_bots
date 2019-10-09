@@ -7,6 +7,8 @@ var posts;
 // getAllPosts();
 // createPost(5, ["Space", "Spaceship"], "No oxygen life");
 
+Post.createPerson(2, "autobiografie", 1, -1, false, parseArray(["#hashtag", "#poesjes"]), parseArray(""))
+
 async function getPostByTag(tag) {
     foodTrucks = await Post.getPostByTag(tag);
     console.log(foodTrucks.data.data.postsByTag.data);
