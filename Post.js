@@ -1,120 +1,89 @@
+require('dotenv').config()
 const Axios = require("axios");
 
 exports.createPost = async (id, tags, text) => {
-    return await Axios({
-        url: 'https://graphql.fauna.com/graphql',
-        method: 'post',
-        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
-        data: {
-            query: 
-                `mutation createPosts {
-                    createPosts(data: { id: ` + id + `, tags: [` + tags + `], text: \"` + text + `\" }) {
-                    id
-                    tags
-                    text
-                    }
-                }`
-        }
-    }).then((result) => {
-        console.log(result.data);
-    }).catch((error => {
-        console.log(error);
-    }));
-}
-
-exports.createUser = async (id, biografie, aantalFollows, aantalFollowers, bedrijf, tags, comments) => {
-    return await Axios({
-        url: 'https://graphql.fauna.com/graphql',
-        method: 'post',
-        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
-        data: {
-            query: 
-                `mutation createUser {
-                    createUser(data: { `+
-                        `id: ` + id + `, `+
-                        `biografie: "` + biografie + `", `+
-                        `aantalFollows: ` + aantalFollows + `, `+
-                        `aantalFollowers: ` + aantalFollowers + `, `+
-                        `bedrijf: ` + bedrijf + `, `+
-                        `tags: [` + tags + `], `+
-                        `comments: [` + comments + `] `+
+    try {
+        const response = await Axios({
+            url: process.env.DB_URL,
+            method: 'post',
+            headers: { "Authorization": "Bearer " + process.env.BEARER_TOKEN },
+            data: {
+                query: 
+                    `mutation createPosts {
+                        createPosts(data: { `+
+                        `post_id: ` + post_id + `, ` +
+                        `user_id: ` + user_id + `, ` +
+                        `created_time: ` + created_time + `, ` +
+                        `location: ` + location + `, ` +
+                        `people_in_post: ` + people_in_post + `, ` +
                     `}) {
-                        id
-                        biografie
-                        aantalFollows
-                        aantalFollowers
-                        bedrijf
-                        tags
-                        comments
-                    }
-                }`
-        }
-    }).then((result) => {
-        console.log(result.data);
-    }).catch((error => {
+                            post_id
+                            user_id
+                            created_time
+                            location
+                            people_in_post
+                        }
+                    }`
+            }
+        })
+        return response;
+    } catch (error) {
         console.log(error);
-    }));
+    } 
 }
 
 exports.getAllPosts = async () => {
-    return await Axios({
-        url: 'https://graphql.fauna.com/graphql',
-        method: 'post',
-        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
-        data: {
-            query: 
-                `query FindAllPosts {
-                    allPosts {
-                        data {
-                            id
-                            tags
-                            text
+    try {
+        const response = await Axios({
+            url: process.env.DB_URL,
+            method: 'post',
+            headers: { "Authorization": "Bearer " + process.env.BEARER_TOKEN },
+            data: {
+                query: 
+                    `query FindAllPosts {
+                        allPosts {
+                            data {
+                                post_id
+                                user_id
+                                created_time
+                                location
+                                people_in_post
+                            }
                         }
-                    }
-                }`
-        }
-    })
+                    }`
+            }
+        })
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-exports.getAllUsers = async () => {
-    return await Axios({
-        url: 'https://graphql.fauna.com/graphql',
-        method: 'post',
-        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
-        data: {
-            query:     
-                `query FindAllUsers{
-                    allUsers {
-                        data {
-                            id
-                            biografie
-                            aantalFollows
-                            aantalFollowers
-                            bedrijf
-                            tags
-                            comments
-                        }
-                    }
-                }`
-        }
-    })
-}
 
-exports.getPostByTag = async (tag) => {
-    return await Axios({
-        url: 'https://graphql.fauna.com/graphql',
-        method: 'post',
-        headers: { "Authorization": "Bearer " + "fnADaLYJAlACC3T4--QFqHBrS-L3tb5MFP0_U_q9" },
-        data: {
-            query:     
-                `query FindPostsByTag {
-                    postsByTag(tags: \"`+ tag + `\") {
-                        data {
-                            id
-                            text
-                    }
-                }
-            }`
-        }
-    })
-}
+
+// method doesn't work after refractoring database
+//
+//
+// exports.getPostByTag = async (tag) => {
+//     try {
+//         const response = await Axios({
+//             url: process.env.DB_URL,
+//             method: 'post',
+//             headers: { "Authorization": "Bearer " + process.env.BEARER_TOKEN },
+//             data: {
+//                 query:     
+//                     `query FindPostsByTag {
+//                         postsByTag(tags: \"`+ tag + `\") {
+//                             data {
+//                                 id
+//                                 text
+//                         }
+//                     }
+//                 }`
+//             }
+//         })
+//         console.log(response);
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }

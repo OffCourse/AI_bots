@@ -1,0 +1,27 @@
+{
+  "name": "offcourse_",
+  "version": "1.0.0",
+  "description": "instaBot",
+  "main": "Main.js",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "dotenv": "^8.1.0"
+  },
+  "devDependencies": {
+    
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/A-Daneel/AI_bots.git"
+  },
+  "author": "Daneel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/A-Daneel/AI_bots/issues"
+  },
+  "homepage": "https://github.com/A-Daneel/AI_bots#readme"
+}
