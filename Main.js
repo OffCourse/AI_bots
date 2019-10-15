@@ -9,7 +9,7 @@ const Puppy = require("./Puppeteer")
 
 //getPostByTag();
 
-Puppy.follow("https://www.instagram.com/worstigaccount/");
+Puppy.follow();
 
 async function createUser(username) {
     dataResponse = await User.createUser(username)
