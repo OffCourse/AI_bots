@@ -1,5 +1,4 @@
 require('dotenv').config()
-const Axios = require("axios");
 const Logic = require("./Logic");
 
 exports.createUser = async (username) => {

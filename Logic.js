@@ -29,6 +29,28 @@ exports.scrapeInstagramUser = async (username) => {
   }
 }
 
+exports.scrapingInstagramPosts = async(username) => {
+  return Axios
+    .get(`https://www.instagram.com/${username}/`)
+    .then(response => {
+      const data = parseResponse(response)
+      const photos = []
+      data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges.forEach(
+        edge => {
+          if (edge.node) {
+            photos.push(edge.node)
+          }
+        }
+      )
+      console.warn("ammount of posts", photos.length)
+      return photos
+    })
+    .catch(err => {
+      console.warn(`\nCould not fetch instagram posts. Error status ${err}`)
+      return null
+    })
+}
+
 exports.executeQuery = async(payload) => {
   try {
     const response = await Axios({

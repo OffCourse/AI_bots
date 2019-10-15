@@ -1,7 +1,15 @@
 const Post = require("./Post");
 const User = require("./User");
+const Logic = require("./Logic")
+const Puppy = require("./Puppeteer")
 
-createUser("worstigaccount");
+//createUser("worstigaccount");
+//Logic.scrapingInstagramPosts("worstigaccount")
+
+
+//getPostByTag();
+
+Puppy.follow("https://www.instagram.com/worstigaccount/");
 
 async function createUser(username) {
     dataResponse = await User.createUser(username)
@@ -26,5 +34,9 @@ async function createPost(id, tags, text) {
 }
 
 async function getAllPosts() {
+    
+}
 
+async function scrapePosts(username, depth) {
+    
 }
