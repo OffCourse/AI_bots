@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 
-async function scrollToBottom(page, n_posts, scrollDelay = 0) {
+async function scrollToBottom(page, n_posts, scrollDelay = 1000) {
+    n_posts = n_posts.replace(",", "");
     returnArray = [];
     do {
         previousHeight = await page.evaluate('document.body.scrollHeight');
@@ -8,7 +9,7 @@ async function scrollToBottom(page, n_posts, scrollDelay = 0) {
         await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
         await page.waitFor(scrollDelay);
         returnArray = await scapeAndAdd(page, returnArray);
-        console.log(returnArray.length)
+        console.log(returnArray.length + " < " + n_posts);
     } while (returnArray.length < n_posts);
     return returnArray;
 }
@@ -27,6 +28,7 @@ async function login(page) {
     await page.goto('https://www.instagram.com/accounts/login/', {
         waitUntil: 'networkidle0' 
     });
+    await page.waitForSelector('._2hvTZ.pexuQ.zyHYP');
     await page.type('._2hvTZ.pexuQ.zyHYP', "c4453830");
     await page.keyboard.press("Tab");
     await page.keyboard.type('werty2468!')
@@ -41,14 +43,14 @@ async function login(page) {
 exports.follow = async(username, password) => {
     // Set up browser and page.
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
     });
     const page = await browser.newPage();
     page.setViewport({ width: 1280, height: 926 });
     
     await login(page);
 
-    await page.goto('https://www.instagram.com/danielmadison/');
+    await page.goto('https://www.instagram.com/worstigaccount/');
     spanElement = await page.$$(".g47SY ");
     x = spanElement.pop();
     x = spanElement.pop();
@@ -60,6 +62,7 @@ exports.follow = async(username, password) => {
     console.log("ready to die now");
     console.log("please kill me")
 
-    // // Close the browser.
-    // await browser.close();
+    // Close the browser.
+    await page.close();
+    //await browser.close();
 }
