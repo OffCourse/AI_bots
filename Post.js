@@ -40,7 +40,6 @@ exports.getAllPosts = async () => {
 exports.scrapePosts = async (username, depth) => {
     const user = await Logic.scrapeInstagramUser(username);
 
-
     console.log(user.edge_owner_to_timeline_media.edges.length)
     if(depth === undefined) {
         //depth = post.length
@@ -48,32 +47,3 @@ exports.scrapePosts = async (username, depth) => {
     //save posts
 
 }
-
-
-
-// method doesn't work after refractoring database
-//
-//
-// exports.getPostByTag = async (tag) => {
-//     try {
-//         const response = await Axios({
-//             url: process.env.DB_URL,
-//             method: 'post',
-//             headers: { "Authorization": "Bearer " + process.env.BEARER_TOKEN },
-//             data: {
-//                 query:     
-//                     `query FindPostsByTag {
-//                         postsByTag(tags: \"`+ tag + `\") {
-//                             data {
-//                                 id
-//                                 text
-//                         }
-//                     }
-//                 }`
-//             }
-//         })
-//         console.log(response);
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }

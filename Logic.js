@@ -16,11 +16,21 @@ const jsonData = $(`html > body > script`)
 return JSON.parse(jsonData).entry_data
 }
 
+exports.scrapePosts = async(response) => {
+    try {
+        const data = parseResponse(response);
+        const { post } = data.ProfilePage[0].graphql;
+        return post;
+    } catch(error) {
+        console.warn(error)
+    }
+}
+
 exports.scrapeInstagramUser = async (username) => {
     try {
         const response = await Axios({
-        url: `https://www.instagram.com/`+username,
-        methods: 'post'
+            url: `https://www.instagram.com/`+username,
+            methods: 'post'
         })
         const data = parseResponse(response);
         const { user } = data.ProfilePage[0].graphql
