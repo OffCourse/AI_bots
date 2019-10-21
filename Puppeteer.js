@@ -9,7 +9,6 @@ async function scrollToBottom(page, n_posts, scrollDelay = 1000) {
         await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
         await page.waitFor(scrollDelay);
         returnArray = await scapeAndAdd(page, returnArray);
-        console.log(returnArray.length + " < " + n_posts);
     } while (returnArray.length < n_posts);
     return returnArray;
 }

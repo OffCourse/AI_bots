@@ -10,9 +10,7 @@
     "gun": "^0.2019.930",
     "puppeteer": "^1.20.0"
   },
-  "devDependencies": {
-    "eslint": "^6.5.1"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

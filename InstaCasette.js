@@ -22,7 +22,15 @@ class InstaCasette {
     }
 
     async getUser() {
-        return ("username: " + this.username);
+        return (this.username);
+    }
+
+    async getPassword() {
+        return (this.password);
+    }
+
+    async getUrlList() {
+        return 
     }
 };
 
