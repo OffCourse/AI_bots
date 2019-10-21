@@ -1,12 +1,8 @@
-// import { Main } from "./Main.js";
 const instaCasette = require("./InstaCasette");
-const Puppy = require("./Puppeteer");
 
-const insta = new instaCasette("username", "password");
-const insta2 = new instaCasette("peter", "wachtwoord");
+const insta = new instaCasette("c4453830", "werty2468!");
 
-
-Puppy.follow("c4453830", "werty2468!");
+insta.getUser().then(data => console.log(data)).catch(error => console.log(error));
 
 // casette.reccomendUser({ tags=[], users=[] });
 // casette.reccomentTags({ tags=[], users=[] });

@@ -1,17 +1,14 @@
 const Post = require("./Post");
 const User = require("./User");
-const Puppy = require("./Puppeteer");
-const Axios = require("axios")
 
 var username, password;
 
-module.exports = class Main {
+class InstaCasette {
     constructor(username, password) {
         this.username = username;
         this.password = password;
     }
 
-    
     async recommendUser(users, tags) {
         recommendations = [];
     
@@ -23,7 +20,13 @@ module.exports = class Main {
     
         return recommendations;
     }
+
+    async getUser() {
+        return ("username: " + this.username);
+    }
 };
+
+module.exports = InstaCasette;
 
 async function createUser(username) {
     dataResponse = await User.createUser(username);
