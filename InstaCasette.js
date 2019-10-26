@@ -1,53 +1,61 @@
-const Post = require("./Post");
 const User = require("./User");
-
-var username, password;
+const Puppy = require("./Puppeteer");
 
 class InstaCasette {
-    constructor(username, password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    async recommendUser(users, tags) {
-        recommendations = [];
+	constructor(username, password) {
+		this.username = username;
+		this.password = password;
+	}
     
-        return recommendations;
-    }
+	async follow(usr) {
+		return await followUser(usr);
+	}
 
-    async recommendTags(users, tags) {
-        recommendations = [];
+	async recommendUser(users, tags) {
+		var recommendations = [];
     
-        return recommendations;
-    }
+		return recommendations;
+	}
 
-    async getUser() {
-        return (this.username);
-    }
+	async recommendTags(users, tags) {
+		var recommendations = [];
+    
+		return recommendations;
+	}
 
-    async getPassword() {
-        return (this.password);
-    }
+	async getUser() {
+		return (this.username);
+	}
 
-    async getUrlList() {
-        return 
-    }
-};
+	async getPassword() {
+		return (this.password);
+	}
+
+	async getUrlList(usr) {
+		var urlList = await followUser(usr);
+		return urlList;
+	}
+}
 
 module.exports = InstaCasette;
 
+async function followUser(username) {
+	var urlList = await Puppy.follow(username);
+	return urlList;
+}
+
 async function createUser(username) {
-    dataResponse = await User.createUser(username);
-    if(dataResponse.status == "200") {
-        console.log(dataResponse.data.errors);
-        console.log("user succesfully created");
-    }
+	var dataResponse = await User.createUser(username);
+	if(dataResponse.status == "200") {
+		console.log(dataResponse.data.errors);
+		console.log("user succesfully created");
+	}
 }
 
 async function getAllUsers() {
-    dataResponse = await User.getAllUsers();
-    userArray = dataResponse.data.data.allUsers.data;
-    console.log(userArray);
+	var dataResponse = await User.getAllUsers();
+	var userArray = dataResponse.data.data.allUsers.data;
+	console.log(userArray);
 }
 
 async function getPostByTag(tag) {
