@@ -1,9 +1,15 @@
 const Gun = require('gun');
 const Logic = require("./Logic");
+var http = require('http');
 
-const GunInstance = new Gun();
+var server = http.createServer();
+const GunInstance = new Gun({web: server});
 const Users = 'Users';
 const Posts = 'Posts';
+
+server.listen(8080, function () {
+    console.log('Server listening on http://localhost:8080/gun')
+  })
 
 exports.createUser = async (username) => {
     const user = await Logic.scrapeInstagramUser(username);
