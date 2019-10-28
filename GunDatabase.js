@@ -11,26 +11,20 @@ server.listen(8080, function () {
     console.log('Server listening on http://localhost:8080/gun')
   })
 
-exports.createUser = async (username) => {
-    const user = await Logic.scrapeInstagramUser(username);
-    posts = [];
-    keywords = [];
-    comments = [];
-    
+exports.createUser = async (username, id, posts, biography, n_follows, n_followers, is_company, keywords, comments) => {
     const users = GunInstance.get(Users);
     users.set(
-        GunInstance.get(user.id).put({
-                username: user.username,
-                user_id: user.id,
+        GunInstance.get(id).put({
+                username: username,
+                user_id: id,
                 posts: JSON.stringify(posts),
-                biography: user.biography,
-                n_follows: user.edge_follow["count"],
-                n_followers: user.edge_followed_by["count"],
-                is_company: user.is_business_account,
+                biography: biography,
+                n_follows: n_follows,
+                n_followers: n_followers,
+                is_company: is_company,
                 keywords: JSON.stringify(keywords),
                 comments: JSON.stringify(comments)
-            }
-        )
+        })
     );
 }
 
