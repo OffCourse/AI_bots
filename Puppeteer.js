@@ -19,9 +19,9 @@ async function scrollToBottom(page, n_posts, scrollDelay = 1000) {
 
 async function scrapeUrls(page, urlList, totalPosts){
 	var results = await page.$$eval(".v1Nh3.kIKUG._bz0w a", links => links.map(link => link.href));
-	for(var i in results) {
-		if(!urlList.includes(results[i])) {
-			urlList.push(results[i]);
+	for(var index in results) {
+		if(!urlList.includes(results[index])) {
+			urlList.push(results[index]);
 		}
 	}
 	console.log("scraped " + urlList.length + " of the " + totalPosts + " posts.");
@@ -53,6 +53,12 @@ async function getValue(page, tag, property) {
 async function scrapePost(page, urlArray) {
 	for(var index in urlArray) {
 		await page.goto(urlArray[index]);
+		// try{
+		// 	await page.$eval((".glyphsSpriteCircle_add__outline__24__grey_9.u-__7"));
+		// 	console.log("great success");
+		// } catch (error) {
+		// 	console.log();
+		// }
 
 		var post = await getValue(page, ".C4VMK", "innerText");
 
@@ -61,23 +67,17 @@ async function scrapePost(page, urlArray) {
 		var postdate = await getValue(page, "._1o9PC.Nzb55", "title");
 
 		try {
-			var location = await page.$(".O4GlU");
-			location = await location.getProperty("innerText");
-			location = await location.jsonValue();
+			var location = await getValue(page, ".O4GlU", "innerText");
 		} catch (error) {
 			location = "unknown";
 		}
 
 		var likes;
 		try{
-			likes = await page.$(".Nm9Fw");
-			likes = await likes.getProperty("innerText");
+			likes = await getValue(page, ".Nm9Fw", "innerText");
 		} catch (e) {
-			likes = await page.$(".vcOH2");
-			likes = await likes.getProperty("innerText");
+			likes = await getValue(page, ".vcOH2", "innerText");
 		}
-		likes = await likes.jsonValue();
-
 
 		console.log("\nUrl:                  " + urlArray[index]);
 		console.log("Post date:            " + postdate);
@@ -88,7 +88,7 @@ async function scrapePost(page, urlArray) {
 	}
 }
 
-exports.follow = async() => {
+exports.follow = async(username) => {
 	const browser = await puppeteer.launch({
 		headless: true,
 	});
@@ -97,21 +97,12 @@ exports.follow = async() => {
     
 	await login(page);
 
-	await page.goto("https://www.instagram.com/onskoningshuis/");
-	var spanElement = await page.$$(".g47SY ");
-	spanElement.pop();
-	spanElement.pop();
-	spanElement = spanElement.pop();
-	spanElement = await spanElement.getProperty("innerText");
-	spanElement = await spanElement.jsonValue();
-	var urlArray = await scrollToBottom(page, spanElement);
+	await page.goto(`https://www.instagram.com/${username}/`);
+	var ammount_of_posts = await getValue(page, ".Y8-fY", "innerText");
+	ammount_of_posts = ammount_of_posts.replace(" posts", "");
+	var urlArray = await scrollToBottom(page, ammount_of_posts);
 	await scrapePost(page, urlArray);
-	console.log(urlArray);
-
-	console.log("ready to die now");
-	console.log("please kill me");
 
 	// Close the browser.
-	await page.close();
 	await browser.close();
 };
