@@ -2,11 +2,11 @@ const Post = require("./Post");
 const User = require("./User");
 const GunDb = require("./GunDatabase");
 
-//GunDb.createUser("koninklijkhuis");
-//GunDb.getAllUsers();
-//GunDb.createPost(1, ['tag1'], 'test');
-//GunDb.getAllPosts();
-//GunDb.getPostByTag('tag1');
+// GunDb.createUser("koninklijkhuis");
+// GunDb.getAllUsers();
+// GunDb.createPost(1, ['tag1'], 'test');
+// GunDb.getAllPosts();
+// GunDb.getPostByTag('tag1');
 
 async function createUser(username) {
     dataResponse = await User.createUser(username)
