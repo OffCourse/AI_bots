@@ -9,19 +9,19 @@
 		<!-- Loads the GUN library -->
 		<script src="https://cdn.rawgit.com/amark/gun/master/gun.js"></script>
 		<script>
-        var peers = ['http://localhost:8080/gun',];
-		var GunInstance = Gun(peers);
+			var peers = ['http://localhost:8080/gun',];
+			var GunInstance = Gun(peers);
 
-		var users = GunInstance.get('Users');
-        var posts = GunInstance.get('Posts');
+			var users = GunInstance.get('Users');
+			var posts = GunInstance.get('Posts');
 
-        users.map().once(function(user){
-        console.log(user);
-        });
+			users.map().once(function(user){
+				console.log(user);
+			});
 
-        posts.map().once(function(post){
-        console.log(post);
-        });
+			posts.map().once(function(post){
+				console.log(post);
+			});
 		</script>
 	</body>
 </html>
