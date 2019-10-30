@@ -1,4 +1,6 @@
 const puppeteer = require("puppeteer");
+const Logic = require("./Logic");
+const discluded = require("./DiscludedWords.json");
 
 var name;
 
@@ -8,22 +10,22 @@ async function scrollToBottom(page, n_posts, scrollDelay = 1000) {
 	var returnArray = [];
 	do {
 		var previousHeight = await page.evaluate("document.body.scrollHeight");
-		try{
+		try {
 			await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
 			await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
 			await page.waitFor(scrollDelay);
 			returnArray = await scrapeUrls(page, returnArray, n_posts);
-		} catch (e){
+		} catch (e) {
 			console.log("an error occured, I shall try again.");
 		}
 	} while (returnArray.length < n_posts);
 	return returnArray;
 }
 
-async function scrapeUrls(page, urlList, totalPosts){
+async function scrapeUrls(page, urlList, totalPosts) {
 	var results = await page.$$eval(".v1Nh3.kIKUG._bz0w a", links => links.map(link => link.href));
-	for(var index in results) {
-		if(!urlList.includes(results[index])) {
+	for (var index in results) {
+		if (!urlList.includes(results[index])) {
 			urlList.push(results[index]);
 		}
 	}
@@ -33,7 +35,7 @@ async function scrapeUrls(page, urlList, totalPosts){
 
 async function login(page) {
 	await page.goto("https://www.instagram.com/accounts/login/", {
-		waitUntil: "networkidle0" 
+		waitUntil: "networkidle0"
 	});
 	await page.waitForSelector("._2hvTZ.pexuQ.zyHYP");
 	await page.type("._2hvTZ.pexuQ.zyHYP", "c4453830");
@@ -61,8 +63,8 @@ async function getValue(page, tag, property) {
 async function scrapePost(page, urlArray) {
 	var postList = [];
 	var i = 0;
-	for(var index in urlArray) {
-		
+	for (var index in urlArray) {
+
 		await page.goto(urlArray[index]);
 		// try{
 		// 	await page.$eval((".glyphsSpriteCircle_add__outline__24__grey_9.u-__7"));
@@ -72,10 +74,10 @@ async function scrapePost(page, urlArray) {
 		// }
 
 		var post = await getValue(page, ".C4VMK", "innerText");
-		try{
+		try {
 			post = PostCleanup(post);
 			postList.push(post);
-		} catch (error) {}
+		} catch (error) { }
 
 		var responses = await page.$$(".Mr508");
 
@@ -88,7 +90,7 @@ async function scrapePost(page, urlArray) {
 		}
 
 		var likes;
-		try{
+		try {
 			likes = await getValue(page, ".Nm9Fw", "innerText");
 		} catch (e) {
 			likes = await getValue(page, ".vcOH2", "innerText");
@@ -106,24 +108,24 @@ async function scrapePost(page, urlArray) {
 	CountWords(postList);
 }
 
-//Todo: Add file with discluded words
-function PostCleanup(post){
+function PostCleanup(post) {
 	post = post.toLowerCase();
 	post = post.replace(/\n/g, " ");
-	post = post.replace(name, "");
-	//post = post.replace(/[0-9]/g, "");	
-	post = post.replace(/[^[a-z0-9]]/g, "");
-	post = post.replace(/ [a-z] /g, "");
-	post = post.replace(/ de | het | een | van | op | in | is | en | met | voor | zijn | day /g, " ");
+	post = post.replace(name, " ");
+	post = post.replace(/[^a-z+ ]/g, " ");
+	post = post.replace(/ [a-z] /g, " ");
+
+	var expStr = discluded.join("|");
+	post = post.replace(new RegExp("\\b(" + expStr + ")\\b", "gi"), " ").replace(/\s{2,}/g, " ");
 	post = post.replace(/ +/, " ");
 	return post;
 }
 
-function CountWords(list){
+function CountWords(list) {
 	let countList = [];
 	let splitList = [];
 	list.forEach(el => {
-		splitList.push(el.match(/\b(\w+)\b/g));
+		if (el.match(/\b(\w+)\b/g) != null) splitList.push(el.match(/\b(\w+)\b/g));
 	});
 
 	splitList.forEach(el => {
@@ -132,7 +134,7 @@ function CountWords(list){
 		});
 	});
 
-	var sorted = Object.keys(countList).sort( function(a,b) {
+	var sorted = Object.keys(countList).sort(function (a, b) {
 		return countList[b] - countList[a];
 	});
 
@@ -140,14 +142,14 @@ function CountWords(list){
 	console.log(name + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
 }
 
-exports.follow = async(username) => {
+exports.follow = async (username) => {
 	const browser = await puppeteer.launch({
 		headless: true,
 	});
 	name = username;
 	const page = await browser.newPage();
 	page.setViewport({ width: 1280, height: 926 });
-    
+
 	await login(page);
 
 	await page.goto(`https://www.instagram.com/${username}/`);
