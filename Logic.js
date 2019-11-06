@@ -24,13 +24,14 @@ exports.postCleanup = async (textList, username) => {
 		let post = element.text;
 		try {
 			post = post.toLowerCase();
+			var expStr = discluded.join("|");
+			post = post.replace(new RegExp("\\b(" + expStr + ")\\b", "gi"), " ").replace(/\s{2,}/g, " ");
 			post = post.replace(/\n/g, " ");
 			post = post.replace(username, " ");
 			post = post.replace(/[^a-z+ ]/g, " ");
 			post = post.replace(/ [a-z] /g, " ");
 	
-			var expStr = discluded.join("|");
-			post = post.replace(new RegExp("\\b(" + expStr + ")\\b", "gi"), " ").replace(/\s{2,}/g, " ");
+
 			post = post.replace(/ +/, " ");
 			cleanedList.push(post);
 		} catch (error) {
@@ -58,9 +59,9 @@ exports.countWords = async (list, username) => {
 			return countList[b] - countList[a];
 		});
 
-		console.log(sorted);
-		console.log(username + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
-		
+		//console.log(sorted);
+		//console.log(username + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
+
 		let topWords = [];
 		let ammountOfTopWords = 5;
 		for (let index = 0; index < ammountOfTopWords; index++) {

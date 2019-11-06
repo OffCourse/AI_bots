@@ -37,8 +37,12 @@ class InstaCasette {
 		return urlList;
 	}
 
-	async classifyUser(username) {
-		classify(username);
+	async classifyUsers(username) {
+		let classifiedUsers = [];
+		for (let index = 0; index < username.length; index++) {
+			classifiedUsers.push(classify(username[index]));			
+		}
+		return classifiedUsers;
 	}
 }
 
@@ -48,7 +52,9 @@ async function classify(username) {
 	const postData = require(`./user_data/twitter_${username}.json`);
 
 	let cleanedPost = await Logic.postCleanup(postData, username);
-	let topWords = Logic.countWords(cleanedPost, username);
+	let topWords = await Logic.countWords(cleanedPost, username);
+	return topWords;
+	console.log(topWords);
 }
 
 async function followUser(username) {
