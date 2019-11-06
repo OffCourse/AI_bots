@@ -1,25 +1,26 @@
 const User = require("./User");
 const Puppy = require("./Puppeteer");
+const Logic = require("./Logic");
 
 class InstaCasette {
 	constructor(username, password) {
 		this.username = username;
 		this.password = password;
 	}
-    
+
 	async follow(usr) {
 		return await followUser(usr);
 	}
 
 	async recommendUser(users, tags) {
 		var recommendations = [];
-    
+
 		return recommendations;
 	}
 
 	async recommendTags(users, tags) {
 		var recommendations = [];
-    
+
 		return recommendations;
 	}
 
@@ -35,9 +36,20 @@ class InstaCasette {
 		var urlList = await followUser(usr);
 		return urlList;
 	}
+
+	async classifyUser(username) {
+		classify(username);
+	}
 }
 
 module.exports = InstaCasette;
+
+async function classify(username) {
+	const postData = require(`./user_data/twitter_${username}.json`);
+
+	let cleanedPost = await Logic.postCleanup(postData, username);
+	Logic.countWords(cleanedPost, username);
+}
 
 async function followUser(username) {
 	var urlList = await Puppy.follow(username);
@@ -46,7 +58,7 @@ async function followUser(username) {
 
 async function createUser(username) {
 	var dataResponse = await User.createUser(username);
-	if(dataResponse.status == "200") {
+	if (dataResponse.status == "200") {
 		console.log(dataResponse.data.errors);
 		console.log("user succesfully created");
 	}
@@ -67,9 +79,9 @@ async function createPost(id, tags, text) {
 }
 
 async function getAllPosts() {
-    
+
 }
 
 async function scrapePosts(username, depth) {
-    
+
 }

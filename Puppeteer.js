@@ -1,8 +1,4 @@
 const puppeteer = require("puppeteer");
-const Logic = require("./Logic");
-const discluded = require("./DiscludedWords.json");
-
-var name;
 
 async function scrollToBottom(page, n_posts, scrollDelay = 1000) {
 	n_posts = n_posts.replace(",", "");
@@ -61,7 +57,6 @@ async function getValue(page, tag, property) {
 }
 
 async function scrapePost(page, urlArray) {
-	var postList = [];
 	var i = 0;
 	for (var index in urlArray) {
 
@@ -74,10 +69,6 @@ async function scrapePost(page, urlArray) {
 		// }
 
 		var post = await getValue(page, ".C4VMK", "innerText");
-		try {
-			post = PostCleanup(post);
-			postList.push(post);
-		} catch (error) { }
 
 		var responses = await page.$$(".Mr508");
 
@@ -104,49 +95,12 @@ async function scrapePost(page, urlArray) {
 		// console.log("Post text:\n" + post);
 		console.log("scraped " + (i += 1) + " of the " + urlArray.length + " posts");
 	}
-	console.log(postList);
-	CountWords(postList);
-}
-
-function PostCleanup(post) {
-	post = post.toLowerCase();
-	post = post.replace(/\n/g, " ");
-	post = post.replace(name, " ");
-	post = post.replace(/[^a-z+ ]/g, " ");
-	post = post.replace(/ [a-z] /g, " ");
-
-	var expStr = discluded.join("|");
-	post = post.replace(new RegExp("\\b(" + expStr + ")\\b", "gi"), " ").replace(/\s{2,}/g, " ");
-	post = post.replace(/ +/, " ");
-	return post;
-}
-
-function CountWords(list) {
-	let countList = [];
-	let splitList = [];
-	list.forEach(el => {
-		if (el.match(/\b(\w+)\b/g) != null) splitList.push(el.match(/\b(\w+)\b/g));
-	});
-
-	splitList.forEach(el => {
-		el.forEach(element => {
-			countList[element] = (countList[element] || 0) + 1;
-		});
-	});
-
-	var sorted = Object.keys(countList).sort(function (a, b) {
-		return countList[b] - countList[a];
-	});
-
-	console.log(sorted);
-	console.log(name + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
 }
 
 exports.follow = async (username) => {
 	const browser = await puppeteer.launch({
-		headless: true,
+		headless: false,
 	});
-	name = username;
 	const page = await browser.newPage();
 	page.setViewport({ width: 1280, height: 926 });
 
