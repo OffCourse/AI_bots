@@ -60,7 +60,12 @@ exports.countWords = async (list, username) => {
 
 		console.log(sorted);
 		console.log(username + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
+		
 		let topWords = [];
+		let ammountOfTopWords = 5;
+		for (let index = 0; index < ammountOfTopWords; index++) {
+			topWords.push(sorted[index]);			
+		}
 		return topWords;
 	} catch (error) {
 		console.log(error);
