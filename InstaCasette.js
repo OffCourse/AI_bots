@@ -48,7 +48,7 @@ async function classify(username) {
 	const postData = require(`./user_data/twitter_${username}.json`);
 
 	let cleanedPost = await Logic.postCleanup(postData, username);
-	Logic.countWords(cleanedPost, username);
+	let topWords = Logic.countWords(cleanedPost, username);
 }
 
 async function followUser(username) {
