@@ -13,46 +13,61 @@ const hashtags =  [
 	[ "antiknow", "antihist", "flattimeho", "pm", "madness" ],
 	[ "amp", "gentcarl", "omg", "black", "ve" ]
 ];
+
+const test = [ "offcourse", "learning", "serverless", "platform", "sxsw" ];
+
 async function encode(arr){
 	const tokenizer = await use.loadTokenizer();
 	const encoded = await tokenizer.encode(arr);
 	return encoded;
 }
-const createNeighbors = async (row, label)  => {
-	const rawVector = row.filter(word => word !== label);
-	const vector = await encode(rawVector);
-	const result = { label, vector }; 
+
+const createNeighborList = async (arr) => {
+	const vector = await encode(arr);
+	const result = { label : arr, vector };
 	return result;
 };
 
-const createNeighborsRow = async (row) => {
-	try {
-		const labeledVectorRow = row.map(label => createNeighbors(row, label));
-		const result = await Promise.all(labeledVectorRow);
-		return result;
-	} catch(e) {
-		console.log(e);
-	}
-};
+Promise.all(test.map(createNeighborList)).then(function(value){
+	console.log(value);
+});
+
+// const createNeighbors = async (row, label)  => {
+// 	const rawVector = row.filter(word => word !== label);
+// 	const vector = await encode(rawVector);
+// 	const result = { label, vector }; 
+// 	return result;
+// };
+
+// const createNeighborsRow = async (row) => {
+// 	try {
+// 		const labeledVectorRow = row.map(label => createNeighbors(row, label));
+// 		const result = await Promise.all(labeledVectorRow);
+// 		return result;
+// 	} catch(e) {
+// 		console.log(e);
+// 	}
+// };
+
 
 //Promise.all(hashtags.map(createNeighborsRow)).then(console.log);
 
-const neighbors = [
-	{ label: "some name", vector: [1, 2, 4, 5] },
-	{ label: "name 2", vector: [14, 4, 13, 2] },
-	{ label: "another name", vector: [4, 4, 4, 5, 6, 7] },
-];
-const target = [1, 2, 3, 4];
-const algo = "mse";
-const k = 3;
+// const neighbors = [
+// 	{ label: "some name", vector: [1, 2, 4, 5] },
+// 	{ label: "name 2", vector: [14, 4, 13, 2] },
+// 	{ label: "another name", vector: [4, 4, 4, 5, 6, 7] },
+// ];
+// const target = [1, 2, 3, 4];
+// const algo = "mse";
+// const k = 3;
 
-var result = knn(algo, k, neighbors, target);
+// var result = knn(algo, k, neighbors, target);
 
-const encodeRow = row => Promise.all(row.map(encode));
+// const encodeRow = row => Promise.all(row.map(encode));
 
-const encodeHashTags = async hashtags => {
-	const encodedRows = await hashtags.map(encodeRow);
-	return await Promise.all(encodedRows);
-};
+// const encodeHashTags = async hashtags => {
+// 	const encodedRows = await hashtags.map(encodeRow);
+// 	return await Promise.all(encodedRows);
+// };
 
-encodeHashTags(hashtags).then(console.log);
+// encodeHashTags(hashtags).then(console.log);
