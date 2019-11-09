@@ -44,6 +44,9 @@ class InstaCasette {
 		}
 		return classifiedUsers;
 	}
+	async getText(usr){
+		return await Logic.getHashtags(usr);
+	}
 }
 
 module.exports = InstaCasette;
@@ -54,7 +57,6 @@ async function classify(username) {
 	let cleanedPost = await Logic.postCleanup(postData, username);
 	let topWords = await Logic.countWords(cleanedPost, username);
 	return topWords;
-	console.log(topWords);
 }
 
 async function followUser(username) {

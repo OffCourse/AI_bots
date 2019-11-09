@@ -1,4 +1,5 @@
 const Axios = require("axios");
+const request = require("request");
 const discluded = require("./DiscludedWords.json");
 
 exports.executeQuery = async (payload) => {
@@ -16,6 +17,53 @@ exports.executeQuery = async (payload) => {
 	} catch (error) {
 		console.log(error);
 	}
+};
+
+exports.getHashtags = async (username) => {
+	var options = { 
+		method: "GET",
+		url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+		qs: { 
+			screen_name: username, 
+			include_rts: 1, 
+			exclude_replies: true, 
+			count: "190",
+			tweet_mode: "extended" 
+		},
+		headers: { 
+			Authorization: "Bearer " + process.env.BEARER_TWITTER
+		}
+	};
+
+	request(options, function (error, response, body) {
+		let lastID;
+		if (error) throw new Error(error);
+
+		let hashtags = [];
+
+		console.log(response.statusCode);
+		let jsonResponse = JSON.parse(body);
+		for (let index = 0; index < jsonResponse.length; index++) {
+			if(jsonResponse[index].entities.hashtags.length > 0) {
+				//for (let index2 = 0; index2 < jsonResponse[index].entities.hashtags.length; index++) {
+				//hashtags.push(jsonResponse[index].entities.hashtags[index2].text);
+				//lastID = jsonResponse[index].id;
+				try{
+					if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
+						console.log(index + " | " + jsonResponse[index].full_text);
+					} else {
+						console.log(index + " | " + jsonResponse[index].retweeted_status.full_text);
+					}
+				} catch(error) {
+					console.log(jsonResponse[index]);
+				}
+				//}
+			}
+		}
+		console.log(hashtags);
+		console.log(jsonResponse.length);
+		console.log(lastID);
+	});
 };
 
 exports.postCleanup = async (textList, username) => {
@@ -41,7 +89,7 @@ exports.postCleanup = async (textList, username) => {
 	return cleanedList;
 };
 
-exports.countWords = async (list, username) => {
+exports.countWords = async (list) => {
 	try {
 		let countList = [];
 		let splitList = [];
@@ -58,9 +106,6 @@ exports.countWords = async (list, username) => {
 		var sorted = Object.keys(countList).sort(function (a, b) {
 			return countList[b] - countList[a];
 		});
-
-		//console.log(sorted);
-		//console.log(username + " is tagged with: " + sorted[0] + ", " + sorted[1] + ", " + sorted[2] + ", " + sorted[3] + ", " + sorted[4]);
 
 		let topWords = [];
 		let ammountOfTopWords = 5;
