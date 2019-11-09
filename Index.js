@@ -7,7 +7,7 @@ async function init() {
 	// let promiseArray = await insta.classifyUsers(users);
 	// const resolvedArray = await Promise.all(promiseArray);
 	// console.log(resolvedArray);
-	insta.getText("yeehaa");
+	console.log(await insta.getText("yeehaa"));
     
     
 	//insta.getUrlList("chrisjulien").then().catch(error => console.log(error));

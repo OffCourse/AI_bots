@@ -1,6 +1,7 @@
 const Axios = require("axios");
 const request = require("request");
 const discluded = require("./DiscludedWords.json");
+const logic = require("./Logic");
 
 exports.executeQuery = async (payload) => {
 	try {
@@ -20,6 +21,8 @@ exports.executeQuery = async (payload) => {
 };
 
 exports.getHashtags = async (username) => {
+	let entries = [];
+
 	var options = { 
 		method: "GET",
 		url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
@@ -27,7 +30,7 @@ exports.getHashtags = async (username) => {
 			screen_name: username, 
 			include_rts: 1, 
 			exclude_replies: true, 
-			count: "190",
+			count: "200",
 			tweet_mode: "extended" 
 		},
 		headers: { 
@@ -36,34 +39,29 @@ exports.getHashtags = async (username) => {
 	};
 
 	request(options, function (error, response, body) {
-		let lastID;
 		if (error) throw new Error(error);
-
-		let hashtags = [];
+		let postText;
 
 		console.log(response.statusCode);
 		let jsonResponse = JSON.parse(body);
 		for (let index = 0; index < jsonResponse.length; index++) {
-			if(jsonResponse[index].entities.hashtags.length > 0) {
-				//for (let index2 = 0; index2 < jsonResponse[index].entities.hashtags.length; index++) {
-				//hashtags.push(jsonResponse[index].entities.hashtags[index2].text);
-				//lastID = jsonResponse[index].id;
-				try{
-					if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
-						console.log(index + " | " + jsonResponse[index].full_text);
-					} else {
-						console.log(index + " | " + jsonResponse[index].retweeted_status.full_text);
-					}
-				} catch(error) {
-					console.log(jsonResponse[index]);
+			//lastID = jsonResponse[index].id;
+			try{
+				if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
+					postText = (jsonResponse[index].full_text);
+				} else {
+					postText = (jsonResponse[index].retweeted_status.full_text);
 				}
-				//}
+			} catch(error) {
+				//
+			}
+			//console.log(postText);
+			if(postText != undefined){
+				entries.push(postText);
 			}
 		}
-		console.log(hashtags);
-		console.log(jsonResponse.length);
-		console.log(lastID);
 	});
+	return entries;
 };
 
 exports.postCleanup = async (textList, username) => {
@@ -83,7 +81,7 @@ exports.postCleanup = async (textList, username) => {
 			post = post.replace(/ +/, " ");
 			cleanedList.push(post);
 		} catch (error) {
-			console.log(error);
+			//console.log(error);
 		}
 	});
 	return cleanedList;

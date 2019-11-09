@@ -45,7 +45,8 @@ class InstaCasette {
 		return classifiedUsers;
 	}
 	async getText(usr){
-		return await Logic.getHashtags(usr);
+		let entries = await Logic.getHashtags(usr);
+		return await Logic.postCleanup(entries);
 	}
 }
 
