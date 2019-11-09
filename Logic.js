@@ -1,5 +1,6 @@
 const Axios = require("axios");
 const request = require("request");
+const rp = require("request-promise");
 const discluded = require("./DiscludedWords.json");
 const logic = require("./Logic");
 
@@ -38,30 +39,34 @@ exports.getHashtags = async (username) => {
 		}
 	};
 
-	request(options, function (error, response, body) {
-		if (error) throw new Error(error);
-		let postText;
-
-		console.log(response.statusCode);
-		let jsonResponse = JSON.parse(body);
-		for (let index = 0; index < jsonResponse.length; index++) {
-			//lastID = jsonResponse[index].id;
-			try{
-				if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
-					postText = (jsonResponse[index].full_text);
-				} else {
-					postText = (jsonResponse[index].retweeted_status.full_text);
+	rp(options)
+		.then(function (error, response, body) {
+			if (error) throw new Error(error);
+			let postText;
+		
+			console.log(response.statusCode);
+			let jsonResponse = JSON.parse(body);
+			for (let index = 0; index < jsonResponse.length; index++) {
+				//lastID = jsonResponse[index].id;
+				try{
+					if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
+						postText = (jsonResponse[index].full_text);
+					} else {
+						postText = (jsonResponse[index].retweeted_status.full_text);
+					}
+				} catch(error) {
+					//
 				}
-			} catch(error) {
-				//
+				//console.log(postText);
+				if(postText != undefined){
+					entries.push(postText);
+				}
 			}
-			//console.log(postText);
-			if(postText != undefined){
-				entries.push(postText);
-			}
-		}
-	});
-	return entries;
+			return entries;
+		})
+		.catch(function (error) {
+			//you dun goofd
+		});
 };
 
 exports.postCleanup = async (textList, username) => {
