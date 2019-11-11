@@ -13,6 +13,7 @@
     "dotenv": "^8.1.0",
     "ml-kmeans": "^5.0.0",
     "node-kmeans": "^1.1.9",
+    "skmeans": "^0.11.2",
     "unsupervised-knn-js": "^2.5.0"
   },
   "devDependencies": {
