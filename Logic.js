@@ -2,7 +2,6 @@ const Axios = require("axios");
 const request = require("request");
 const rp = require("request-promise");
 const discluded = require("./DiscludedWords.json");
-const logic = require("./Logic");
 
 exports.executeQuery = async (payload) => {
 	try {
@@ -23,6 +22,7 @@ exports.executeQuery = async (payload) => {
 
 exports.getHashtags = async (username) => {
 	let entries = [];
+	let lastID;
 
 	var options = { 
 		method: "GET",
@@ -36,54 +36,48 @@ exports.getHashtags = async (username) => {
 		},
 		headers: { 
 			Authorization: "Bearer " + process.env.BEARER_TWITTER
-		}
+		},
+		json: true
 	};
 
-	rp(options)
-		.then(function (error, response, body) {
-			if (error) throw new Error(error);
-			let postText;
+	return rp(options)
+		.then(function (resp) {
 		
-			console.log(response.statusCode);
-			let jsonResponse = JSON.parse(body);
-			for (let index = 0; index < jsonResponse.length; index++) {
-				//lastID = jsonResponse[index].id;
+			for (let index = 0; index < resp.length; index++) {
+				lastID = resp[index].id;
 				try{
-					if(!jsonResponse[index].full_text.slice(0,2) == "RT"){
-						postText = (jsonResponse[index].full_text);
+					if(resp[index].full_text.match(/RT \S+/)){
+						entries.push(resp[index].retweeted_status.full_text);
 					} else {
-						postText = (jsonResponse[index].retweeted_status.full_text);
+						entries.push(resp[index].full_text);
 					}
 				} catch(error) {
 					//
-				}
-				//console.log(postText);
-				if(postText != undefined){
-					entries.push(postText);
 				}
 			}
 			return entries;
 		})
 		.catch(function (error) {
-			//you dun goofd
-		});
+			console.log(error);
+		})
+	;
 };
 
 exports.postCleanup = async (textList, username) => {
 	let cleanedList = [];
 	textList.forEach(element => {
-		let post = element.text;
+		let post = element;
 		try {
 			post = post.toLowerCase();
 			var expStr = discluded.join("|");
-			post = post.replace(new RegExp("\\b(" + expStr + ")\\b", "gi"), " ").replace(/\s{2,}/g, " ");
-			post = post.replace(/\n/g, " ");
-			post = post.replace(username, " ");
-			post = post.replace(/[^a-z+ ]/g, " ");
-			post = post.replace(/ [a-z] /g, " ");
+			post = post.replace(/https?:\S+/g, "");		//remove urls
+			post = post.replace(new RegExp(" \\b(" + expStr + ")\\b ", "gi"), " ").replace(/\s{2,}/g, " ");
+			post = post.replace(/\n/g, " ");			//remove breaklines
+			post = post.replace(username, "");			//remove username
+			post = post.replace(/[^a-z+ ]/g, " ");		//remove non[a-z] chars
+			post = post.replace(/ [a-z] /g, " ");		//remove single letters
 	
-
-			post = post.replace(/ +/, " ");
+			post = post.replace(/\s+/g, " ");			//replace multiple blank spaces with one
 			cleanedList.push(post);
 		} catch (error) {
 			//console.log(error);
