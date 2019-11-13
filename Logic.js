@@ -19,7 +19,7 @@ exports.executeQuery = async (payload) => {
 	}
 };
 
-function setOptions(username, maxId = 0) {
+function setOptions(username, maxId = 0, postsPerCall) {
 	let options;
 	if(maxId == 0) {
 		options = { 
@@ -29,7 +29,7 @@ function setOptions(username, maxId = 0) {
 				screen_name: username, 
 				include_rts: 1, 
 				exclude_replies: true, 
-				count: "200",
+				count: `${postsPerCall}`,
 				tweet_mode: "extended"
 			},
 			headers: { 
@@ -45,7 +45,7 @@ function setOptions(username, maxId = 0) {
 				screen_name: username, 
 				include_rts: 1, 
 				exclude_replies: true, 
-				count: "200",
+				count: `${postsPerCall}`,
 				tweet_mode: "extended",
 				max_id: maxId
 			},
@@ -58,16 +58,18 @@ function setOptions(username, maxId = 0) {
 	return options;
 }
 
-exports.getHashtags = async (username) => {
+exports.getHashtags = async (username, postId = 0, postsPerCall) => {
 	setOptions(username);
 	let entries = [];
 	let lastID;
-	
-	return rp(setOptions(username))
+	let totalPosts = 0;
+
+	return rp(setOptions(username, postId, postsPerCall))
 		.then(function (resp) {
-		
+			totalPosts = resp[0].user.statuses_count;
 			for (let index = 0; index < resp.length; index++) {
 				lastID = resp[index].id;
+
 				try{
 					if(resp[index].full_text.match(/RT \S+/)){
 						entries.push(resp[index].retweeted_status.full_text);
@@ -78,7 +80,7 @@ exports.getHashtags = async (username) => {
 					//
 				}
 			}
-			return entries;
+			return {entries: entries, lastID: lastID, totalPosts: totalPosts};
 		})
 		.catch(function (error) {
 			console.log(error);

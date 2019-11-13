@@ -1,5 +1,4 @@
 const User = require("./User");
-const Puppy = require("./Puppeteer");
 const Logic = require("./Logic");
 
 class InstaCasette {
@@ -45,8 +44,20 @@ class InstaCasette {
 		return classifiedUsers;
 	}
 	async getText(usr){
-		let entries = await Logic.getHashtags(usr);
-		return await Logic.postCleanup(entries);
+		let lastId; //Id of last retrieved post
+		let listOfPosts = []; //List of retrieved posts
+		let postsPerCall = 200; //Amount of posts to retrieve per call
+		let retrievedPosts = 0; //Total amount of retrieved posts
+		let totalPosts = 0; //Total amount of posts a user has posted
+		const maxRetrievablePosts = 3200; //Amount of retrievable posts, limited by the API
+		do {
+			let object = await Logic.getHashtags(usr, lastId, postsPerCall);
+			lastId = object.lastID; 
+			retrievedPosts += postsPerCall;
+			totalPosts = object.totalPosts;
+			listOfPosts.push(await Logic.postCleanup(object.entries));
+		} while (retrievedPosts < maxRetrievablePosts && retrievedPosts < totalPosts);
+		return listOfPosts;	
 	}
 }
 
