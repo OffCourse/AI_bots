@@ -1,5 +1,4 @@
 const Axios = require("axios");
-const request = require("request");
 const rp = require("request-promise");
 const discluded = require("./DiscludedWords.json");
 
@@ -20,27 +19,51 @@ exports.executeQuery = async (payload) => {
 	}
 };
 
+function setOptions(username, maxId = 0) {
+	let options;
+	if(maxId == 0) {
+		options = { 
+			method: "GET",
+			url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+			qs: { 
+				screen_name: username, 
+				include_rts: 1, 
+				exclude_replies: true, 
+				count: "200",
+				tweet_mode: "extended"
+			},
+			headers: { 
+				Authorization: "Bearer " + process.env.BEARER_TWITTER
+			},
+			json: true
+		};
+	} else {
+		options = { 
+			method: "GET",
+			url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+			qs: { 
+				screen_name: username, 
+				include_rts: 1, 
+				exclude_replies: true, 
+				count: "200",
+				tweet_mode: "extended",
+				max_id: maxId
+			},
+			headers: { 
+				Authorization: "Bearer " + process.env.BEARER_TWITTER
+			},
+			json: true
+		};		
+	}
+	return options;
+}
+
 exports.getHashtags = async (username) => {
+	setOptions(username);
 	let entries = [];
 	let lastID;
-
-	var options = { 
-		method: "GET",
-		url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-		qs: { 
-			screen_name: username, 
-			include_rts: 1, 
-			exclude_replies: true, 
-			count: "200",
-			tweet_mode: "extended" 
-		},
-		headers: { 
-			Authorization: "Bearer " + process.env.BEARER_TWITTER
-		},
-		json: true
-	};
-
-	return rp(options)
+	
+	return rp(setOptions(username))
 		.then(function (resp) {
 		
 			for (let index = 0; index < resp.length; index++) {
@@ -70,14 +93,14 @@ exports.postCleanup = async (textList, username) => {
 		try {
 			post = post.toLowerCase();
 			var expStr = discluded.join("|");
-			post = post.replace(/https?:\S+/g, "");		//remove urls
+			post = post.replace(/https?:\S+/g, "");		// remove urls
 			post = post.replace(new RegExp(" \\b(" + expStr + ")\\b ", "gi"), " ").replace(/\s{2,}/g, " ");
-			post = post.replace(/\n/g, " ");			//remove breaklines
-			post = post.replace(username, "");			//remove username
-			post = post.replace(/[^a-z+ ]/g, " ");		//remove non[a-z] chars
-			post = post.replace(/ [a-z] /g, " ");		//remove single letters
+			post = post.replace(/\n/g, " ");			// remove breaklines
+			post = post.replace(username, "");			// remove username
+			post = post.replace(/[^a-z+ ]/g, " ");		// remove non[a-z] chars
+			post = post.replace(/(^| ).( |$)/g, " ");	// remove single letters
 	
-			post = post.replace(/\s+/g, " ");			//replace multiple blank spaces with one
+			post = post.replace(/\s+/g, " ");			// replace multiple blank spaces with one
 			cleanedList.push(post);
 		} catch (error) {
 			//console.log(error);
