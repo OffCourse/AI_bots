@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <title>Tweet-IT</title>
+</head>
+
+<body>
+    <textarea id="textarea" oninput="onChange()"></textarea>
+    <h3>How many tags do you want?</h3>
+    <input oninput="onChange()" id="amountOfTags" value="3"></input>
+    <h1 id="result"></h1>
+
+
+    <script scr="Recommend.js" type="application/javascript"></script>
+    <script type="text/javascript">
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        window.onChange = function () {
+            const text = document.getElementById("textarea").value;
+            if (text.split(" ").length > 5) {
+                const amountOfTags = document.getElementById("amountOfTags").value
+                const hashtags = ["#Blessed", "#Satan", "#BeachLife", "#DyingRightNow", "#666", "#NotTheDevil", "#Idk", "#GoingHome"];
+                var start = "";
+                for (var i = 0; i < amountOfTags; i++) {
+                    const index = getRandomInt(hashtags.length)
+                    console.log(index);
+                    start += " " + hashtags[index];
+                }
+
+                document.getElementById("result").innerHTML = text + start;
+            }
+        };
+    </script>
+
+</body>
+
+
+</html>
