@@ -55,7 +55,10 @@ class InstaCasette {
 			lastId = object.lastID; 
 			retrievedPosts += postsPerCall;
 			totalPosts = object.totalPosts;
-			listOfPosts.push(await Logic.postCleanup(object.entries));
+			let posts = await Logic.postCleanup(object.entries);
+			posts.forEach(post => {
+				listOfPosts.push(post);
+			});
 		} while (retrievedPosts < maxRetrievablePosts && retrievedPosts < totalPosts);
 		return listOfPosts;	
 	}
