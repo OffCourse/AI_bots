@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Axios = require("axios");
 const rp = require("request-promise");
 const discluded = require("./DiscludedWords.json");
