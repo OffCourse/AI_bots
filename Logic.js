@@ -96,14 +96,13 @@ exports.postCleanup = async (textList, username) => {
 		try {
 			post = post.toLowerCase();
 			var expStr = discluded.join("|");
-			post = post.replace(/https?:\S+/g, "");		// remove urls
-			post = post.replace(new RegExp(" \\b(" + expStr + ")\\b ", "gi"), " ").replace(/\s{2,}/g, " ");
-			post = post.replace(/\n/g, " ");			// remove breaklines
-			post = post.replace(username, "");			// remove username
-			post = post.replace(/[^a-z+ ]/g, " ");		// remove non[a-z] chars
-			post = post.replace(/(^| ).( |$)/g, " ");	// remove single letters
-	
-			post = post.replace(/\s+/g, " ");			// replace multiple blank spaces with one
+			post = post.replace(/https?:\S+/g, "");								// remove urls
+			post = post.replace(new RegExp(("\\b("+expStr+")\\b"), "g"), " ");	// remove discluded words
+			post = post.replace(/\n/g, " ");									// remove breaklines
+			post = post.replace(/[^a-z+ ]/g, " ");								// remove non[a-z] chars
+			post = post.replace(/(^| ).( |$)/g, " ");							// remove single letters
+			post = post.replace(new RegExp(username, "g"), "");					// remove username
+			//post = post.replace(/\s+/g, " ");									// replace multiple blank spaces with one
 			cleanedList.push(post);
 		} catch (error) {
 			//console.log(error);
@@ -130,12 +129,14 @@ exports.countWords = async (list) => {
 			return countList[b] - countList[a];
 		});
 
-		let topWords = [];
-		let ammountOfTopWords = 5;
-		for (let index = 0; index < ammountOfTopWords; index++) {
-			topWords.push(sorted[index]);			
-		}
-		return topWords;
+		return sorted;
+		// console.log(sorted);
+		// let topWords = [];
+		// let ammountOfTopWords = x;
+		// for (let index = 0; index < ammountOfTopWords; index++) {
+		// 	topWords.push(sorted[index]);			
+		// }
+		// return topWords;
 	} catch (error) {
 		console.log(error);
 	}

@@ -23,12 +23,12 @@ class TweetIt {
 			lastId = object.lastID; 
 			retrievedPosts += postsPerCall;
 			totalPosts = object.totalPosts;
-			let posts = await Logic.postCleanup(object.entries);
+			let posts = await Logic.postCleanup(object.entries, usr);
 			posts.forEach(post => {
 				listOfPosts.push(post);
 			});
 		} while (retrievedPosts < maxRetrievablePosts && retrievedPosts < totalPosts);
-		return listOfPosts;	
+		return await Logic.countWords(listOfPosts);	
 	}
 }
 
