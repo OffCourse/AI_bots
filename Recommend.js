@@ -1,7 +1,7 @@
-// function idk() {
-// 	console.log("Spaghetti and meatballs");
-// }
+function display() {
+	console.log("Spaghetti and meatballs");
+}
 
 document.getElementById("textarea").addEventListener("input", function() {
-    console.log("Je moeder is een hamster");
+	console.log("Je moeder is een hamster");
 });
