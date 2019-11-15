@@ -11,7 +11,8 @@ var
 		".js" : "application/javascript",
 		".png" : "image/png",
 		".gif" : "image/gif",
-		".jpg" : "image/jpeg"
+		".jpg" : "image/jpeg",
+		".ico" : "image/x-icon"
 	};
 
 //helper function handles file verification
