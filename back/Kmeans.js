@@ -1,6 +1,8 @@
-getRecommendations("trump");
+getRecommendations("trump").then(function(result) {
+	console.log(result);
+});
 
-async function prepareData(rawData, targetLabel) {
+function prepareData(rawData, targetLabel) {
 	var dataList = [];
 	var count = 0;
 
@@ -50,7 +52,7 @@ async function prepareData(rawData, targetLabel) {
 	return { data: dataList, target: target };
 }
 
-async function shapeData(data, target) {
+function shapeData(data, target) {
 	const vectorLimit = 10;
 	data.forEach(element => {
 		element.vector = element.vector.slice(0, vectorLimit);
@@ -61,16 +63,17 @@ async function shapeData(data, target) {
 }
 
 
-async function getRecommendations(targetLabel) {
+function getRecommendations(targetLabel) {
 	const rawData = require("../cleaned_tweets.json");
-	const preparedData = await prepareData(rawData, targetLabel);
-	//const shapedData = await shapeData(preparedData.data, preparedData.target);
+	const preparedData = prepareData(rawData, targetLabel);
+	//const shapedData = shapeData(preparedData.data, preparedData.target);
 	//const recommendations = evaluateKmeans(shapedData.data, shapedData.target, 25);
 	const recommendations = evaluate(preparedData.data, preparedData.target);
-	console.log(recommendations);
+	return recommendations;
 }
 
 function evaluate(data, target) {
+	const Logic = require("./Logic");
 	var recommendations = [];
 	if (data.some(element => element["label"] === target.label)) {
 		var targetInData = data.filter(function (element) {
@@ -81,12 +84,14 @@ function evaluate(data, target) {
 		});
 	}
 	else {
-		//If target is not in data, return random recommendations
+		//If target is not in dataset, return random recommendations
 		var randomIndex = Math.floor(Math.random() * data.length);
 		data[randomIndex].vector.forEach(word => {
 			if (word !== target.label && !recommendations.some(recommendation => recommendation === word)) recommendations.push(word);
 		});
 	}
+
+	recommendations = Logic.countWords(recommendations);
 
 	return recommendations;
 }
