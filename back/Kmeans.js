@@ -3,31 +3,32 @@ getRecommendations("offcourse");
 async function prepareData(data, targetLabel) {
 	var dataList = [];
 	var count = 0;
-	const encodedDictionary = await createDictionary(data);
+	const encodedDictionary = createDictionary(data);
 	data.forEach(string => {
-		var words = [];
-		words = string.split(/\s+/);
-		words.forEach(x => {
+		var words = splitString(string);
+		words.forEach(function(word, wordIndex) {
 			var vectors = [];
-			words.forEach(y => {
-				if (x != y) {
+			var amountOfAdjacentWords = 2; //Amount of adjacent words to look for, in front of and behind the corresponding word
+			for (var adjacentIndex = -amountOfAdjacentWords; adjacentIndex <= amountOfAdjacentWords; adjacentIndex++) {
+				if (adjacentIndex != 0 && words[wordIndex + adjacentIndex] != undefined){
 					var wordInDictionary = encodedDictionary.filter(function (element) {
-						return element.label === y;
+						return element.label === words[wordIndex + adjacentIndex];
 					});
 					vectors.push(wordInDictionary[0].value);
+					
 				}
-			});
+			}
 
-			if (dataList.some(element => element["label"] === x)) {
+			if (dataList.some(element => element["label"] === word)) {
 				var wordInDataList = dataList.filter(function (element) {
-					return element.label === x;
+					return element.label === word;
 				});
 				var oldVector = dataList[wordInDataList[0].index].vector;
 				var newVector = oldVector.concat(vectors);
 				dataList[wordInDataList[0].index].vector = newVector;
 			}
 			else {
-				dataList.push({ label: x, vector: vectors, index: count++ });
+				dataList.push({ label: word, vector: vectors, index: count++ });
 			}
 		});
 	});
@@ -50,8 +51,8 @@ async function getRecommendations(target) {
 	const rawData = require("../cleaned_tweets.json");
 	const preparedData = await prepareData(rawData, target);
 	console.log(preparedData.data);
-	const recommendations = evaluate(preparedData.data, preparedData.target, 100);
-	console.log(recommendations);
+	//const recommendations = evaluate(preparedData.data, preparedData.target, 100);
+	//console.log(recommendations);
 }
 
 function evaluate(data, target, clusters) {
@@ -89,12 +90,11 @@ function evaluate(data, target, clusters) {
 	return recommendations;
 }
 
-async function createDictionary(data) {
+function createDictionary(data) {
 	var dict = [];
 	var count = 0;
 	data.forEach(string => {
-		var words = [];
-		words = string.split(/\s+/);
+		var words = splitString(string);
 		words.forEach(word => {
 			if (!dict.some(element => element["label"] === word)) {
 				dict.push({ label: word, value: count++ });
@@ -102,4 +102,11 @@ async function createDictionary(data) {
 		});
 	});
 	return dict;
+}
+
+function splitString(string){
+	var words = string.split(/\s+/);
+	// eslint-disable-next-line quotes
+	words = words.filter(word => word != ''); //Remove empty strings
+	return words;
 }
