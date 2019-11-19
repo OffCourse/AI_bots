@@ -80,14 +80,14 @@ function evaluate(data, target) {
 			return element.label === target.label;
 		});
 		targetInData[0].vector.forEach(word => {
-			if (word !== target.label && !recommendations.some(recommendation => recommendation === word)) recommendations.push(word);
+			if (word !== target.label) recommendations.push(word);
 		});
 	}
 	else {
 		//If target is not in dataset, return random recommendations
 		var randomIndex = Math.floor(Math.random() * data.length);
 		data[randomIndex].vector.forEach(word => {
-			if (word !== target.label && !recommendations.some(recommendation => recommendation === word)) recommendations.push(word);
+			if (word !== target.label) recommendations.push(word);
 		});
 	}
 
