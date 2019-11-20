@@ -64,6 +64,7 @@ function shapeData(data, target) {
 
 
 function getRecommendations(targetLabel) {
+	targetLabel = targetLabel.toLowerCase();
 	const rawData = require("../cleaned_tweets.json");
 	const preparedData = prepareData(rawData, targetLabel);
 	//const shapedData = shapeData(preparedData.data, preparedData.target);

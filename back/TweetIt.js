@@ -28,7 +28,7 @@ class TweetIt {
 				listOfPosts.push(post);
 			});
 		} while (retrievedPosts < maxRetrievablePosts && retrievedPosts < totalPosts);
-		return await Logic.countWords(listOfPosts);	
+		return await listOfPosts;	
 	}
 }
 
