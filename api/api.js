@@ -83,7 +83,6 @@ function getRecommendations(targetLabel) {
 	const rawData = require("../cleaned_tweets.json");
 	const preparedData = prepareData(rawData, targetLabel);
 	const recommendations = evaluate(preparedData.data, preparedData.target);
-	fs.writeFile("prepared_data.json", JSON.stringify(preparedData), console.log);
 	return recommendations;
 }
 
