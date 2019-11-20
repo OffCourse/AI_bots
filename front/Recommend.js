@@ -30,9 +30,14 @@ async function onChange() {
 			  console.log(json);
 		  });
 
-		for (var i = 0; i < amountOfTags; i++) {
-			const index = getRandomInt(hashtags.length);
-			start += " #" + hashtags[index];
+		  
+		for (let index = 0; index < amountOfTags; index++) {
+			let button = document.createElement("BUTTON");
+			button.innerHTML = result[index];
+			button.onclick = function () {
+				button.innerHTML = "#"+ hashtags[getRandomInt(hashtags.length)];
+			};
+			buttonGroup.appendChild(button);
 		}
 	}
 
