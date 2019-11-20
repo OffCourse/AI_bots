@@ -27,6 +27,9 @@ function onChange() {
 		for (let index = 0; index < amountOfTags; index++) {
 			let button = document.createElement("BUTTON");
 			button.innerHTML = result[index];
+			button.onclick = function () {
+				button.innerHTML = "#"+ hashtags[getRandomInt(hashtags.length)];
+			};
 			buttonGroup.appendChild(button);
 		}
 	}
