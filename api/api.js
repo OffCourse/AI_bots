@@ -33,7 +33,7 @@ app.listen(process.env.PORT, () =>
 	console.log(`Example app listening on port ${process.env.PORT}!`),
 );
 
-function prepareData(rawData, targetLabel) {
+function prepareData(rawData) {
 	var dataList = [];
 	var count = 0;
 
@@ -65,24 +65,29 @@ function prepareData(rawData, targetLabel) {
 			}
 		});
 	});
+	return dataList;
+}
 
+function prepareTarget(preparedData, targetLabel)	{
 	var target = {};
-	if (dataList.some(element => element["label"] === targetLabel)) {
-		var targetInDataList = dataList.filter(function (element) {
+	if (preparedData.some(element => element["label"] === targetLabel)) {
+		var targetInDataList = preparedData.filter(function (element) {
 			return element.label === targetLabel;
 		});
 		target = { label: targetLabel, vector: targetInDataList[0].vector };
 	} else {
-		target = { label: targetLabel, vector: dataList.length };
+		target = { label: targetLabel, vector: preparedData.length };
 	}
-	return { data: dataList, target: target };
+	return target;
 }
 
 
 function getRecommendations(targetLabel) {
-	const rawData = require("../cleaned_tweets.json");
-	const preparedData = prepareData(rawData, targetLabel);
-	const recommendations = evaluate(preparedData.data, preparedData.target);
+	//const rawData = require("../cleaned_tweets.json");
+	//const preparedData = prepareData(rawData);
+	const preparedData = require("../prepared_data.json");
+	const preparedTarget = prepareTarget(preparedData, targetLabel);
+	const recommendations = evaluate(preparedData, preparedTarget);
 	return recommendations;
 }
 
