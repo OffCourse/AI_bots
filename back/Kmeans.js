@@ -1,6 +1,6 @@
-getRecommendations("trump").then(function(result) {
-	console.log(result);
-});
+// getRecommendations("trump").then(function(result) {
+// 	console.log(result);
+// });
 
 function prepareData(rawData, targetLabel) {
 	var dataList = [];
@@ -63,12 +63,12 @@ function shapeData(data, target) {
 }
 
 
-function getRecommendations(targetLabel) {
-	const rawData = require("../cleaned_tweets.json");
-	const preparedData = prepareData(rawData, targetLabel);
+async function getRecommendations(targetLabel) {
+	const rawData = await require("../cleaned_tweets.json");
+	const preparedData = await prepareData(rawData, targetLabel);
 	//const shapedData = shapeData(preparedData.data, preparedData.target);
 	//const recommendations = evaluateKmeans(shapedData.data, shapedData.target, 25);
-	const recommendations = evaluate(preparedData.data, preparedData.target);
+	const recommendations = await evaluate(preparedData.data, preparedData.target);
 	return recommendations;
 }
 
@@ -145,3 +145,5 @@ function splitString(string){
 	words = words.filter(word => word != ''); //Remove empty strings
 	return words;
 }
+
+module.exports.getRecommendations = getRecommendations;
