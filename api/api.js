@@ -11,8 +11,8 @@ app.get("/", (req, res) => {
 	return res.send("Received a GET HTTP method");
 });
 
-app.get("/getRecommend/:tag", (req, res) => {
-	getRecommendations(req.params.tag).then(function(result) {
+app.get("/getRecommend/:username/:tag", (req, res) => {
+	getRecommendations(req.params.username ,req.params.tag).then(function(result) {
 		return res.send(result);
 	});
 });
@@ -33,18 +33,18 @@ app.listen(process.env.PORT, () =>
 	console.log(`Example app listening on port ${process.env.PORT}!`),
 );
 
-function prepareData(rawData) {
+async function prepareData(rawData) {
 	var dataList = [];
 	var count = 0;
 
 	const encodedDictionary = createDictionary(rawData);
 	rawData.forEach(string => {
 		var words = splitString(string);
-		words.forEach(function(word, wordIndex) {
+		words.forEach(function (word, wordIndex) {
 			var values = [];
 			var amountOfAdjacentWords = 1; //Amount of adjacent words to look for, in front of and behind the corresponding word
 			for (var adjacentIndex = -amountOfAdjacentWords; adjacentIndex <= amountOfAdjacentWords; adjacentIndex++) {
-				if (adjacentIndex != 0 && words[wordIndex + adjacentIndex] != undefined){
+				if (adjacentIndex != 0 && words[wordIndex + adjacentIndex] != undefined) {
 					var wordInDictionary = encodedDictionary.filter(function (element) {
 						return element.label === words[wordIndex + adjacentIndex];
 					});
@@ -68,7 +68,8 @@ function prepareData(rawData) {
 	return dataList;
 }
 
-function prepareTarget(preparedData, targetLabel)	{
+function prepareTarget(preparedData, targetLabel) {
+	console.log("Data is: " + preparedData);
 	var target = {};
 	if (preparedData.some(element => element["label"] === targetLabel)) {
 		var targetInDataList = preparedData.filter(function (element) {
@@ -81,14 +82,48 @@ function prepareTarget(preparedData, targetLabel)	{
 	return target;
 }
 
+async function getUserData(username) {
+	var userData;
+	const TweetItModule = require("../back/TweetIt");
+	const fs = require("fs");
+	const TweetIt = new TweetItModule();
+	TweetIt.getText(username).then(function (result) {
+		userData = prepareData(result);
+		fs.writeFile(`${username}_data.json`, userData, console.log);
+		return userData;
+	});
+}
 
-function getRecommendations(targetLabel) {
+async function getRecommendations(username, targetLabel) {
+	var preparedData;
+	let preparedTarget;
+	let recommendations;
+	try {
+		preparedData = require(`../${username}_data.json`);
+		// eslint-disable-next-line no-empty
+		preparedTarget = prepareTarget(preparedData, targetLabel);
+		recommendations = evaluate(preparedData, preparedTarget);
+	} catch (error) { }
+
+	if (preparedData == null) {
+		await getUserData(username).then(function(result){
+			preparedData = result;
+			preparedTarget = prepareTarget(preparedData, targetLabel);
+			recommendations = evaluate(preparedData, preparedTarget);
+		});
+	}
+	
+	return recommendations;
+
+
 	//const rawData = require("../cleaned_tweets.json");
 	//const preparedData = prepareData(rawData);
-	const preparedData = require("../prepared_data.json");
-	const preparedTarget = prepareTarget(preparedData, targetLabel);
-	const recommendations = evaluate(preparedData, preparedTarget);
-	return recommendations;
+	//const preparedData = require("../prepared_data.json");
+
+	//targetLabel = targetLabel.toLowerCase();
+	//const preparedTarget = prepareTarget(preparedData, targetLabel);
+	//const recommendations = evaluate(preparedData, preparedTarget);
+	//return recommendations;
 }
 
 function evaluate(data, target) {
@@ -126,7 +161,7 @@ function createDictionary(data) {
 	return dict;
 }
 
-function splitString(string){
+function splitString(string) {
 	var words = string.split(/\s+/);
 	// eslint-disable-next-line quotes
 	words = words.filter(word => word != ''); //Remove empty strings
