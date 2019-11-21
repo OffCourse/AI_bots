@@ -44,7 +44,6 @@ app.post("/api/post", async function (req, res) {
 		const endResult = await JSON.stringify({"result" : Array.from(result)});
 		// console.log(result2);
 		res.json(endResult);
-
 	} catch (error) {
 		console.log(error);
 	}

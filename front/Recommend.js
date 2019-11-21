@@ -24,7 +24,7 @@ async function onChange() {
 		const tweetJson = JSON.stringify({ "tweet": text });
 		console.log(tweetJson);
 		//todo make api port dynamic
-		const url = `http://localhost:8081/api/post`;
+		const url = `http://localhost:${process.env.API_PORT}/api/post`;
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			mode: "cors", // no-cors, *cors, same-origin
