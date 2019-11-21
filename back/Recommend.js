@@ -13,7 +13,7 @@ async function prepareData(rawData) {
 					var wordInDictionary = encodedDictionary.filter(function (element) {
 						return element.label === words[wordIndex + adjacentIndex];
 					});
-					values.push(wordInDictionary[0].label); //Note: change "label" to "value" when using K-means 
+					values.push(wordInDictionary[0].value); //Note: change "label" to "value" when using K-means 
 				}
 			}
 
@@ -77,7 +77,7 @@ exports.getRecommendations = async(username, targetLabel) => {
 		preparedData = await getUserData(username);
 	}
 	const preparedTarget = prepareTarget(preparedData, targetLabel);
-	const recommendations = evaluate(preparedData, preparedTarget);
+	const recommendations = evaluateKmeans(preparedData, preparedTarget, 7);
 	return recommendations;
 };
 
@@ -95,6 +95,35 @@ function evaluate(data, target) {
 		//
 	}
 	recommendations = Logic.countWords(recommendations);
+	return recommendations;
+}
+
+function evaluateKmeans(data, target, clusters) {
+	const skmeans = require("skmeans");
+
+	//Get vectors from data
+	var vectors = [];
+	data.forEach(entry => {
+		vectors.push(entry.vector);
+	});
+
+	//Apply K-means algorithm
+	const model = skmeans(vectors, clusters);
+	console.log(model);
+	//Test target on model
+	const evaluation = model.test(target.vector);
+
+	//Get cluster index of target
+	var clusterIndex = evaluation.idx;
+
+	var recommendations = [];
+	//Get indexes of data in the same cluster as the target
+	for (var i = 0; i < model.idxs.length; i++) {
+		//Ignore last element, this is the target itself
+		if (model.idxs[i] === clusterIndex && data[i].label !== target.label) {
+			recommendations.push(data[i].label);
+		}
+	}
 	return recommendations;
 }
 
