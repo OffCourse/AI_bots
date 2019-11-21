@@ -1,4 +1,3 @@
-
 function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
@@ -24,10 +23,11 @@ async function onChange() {
 
 		const tweetJson = JSON.stringify({ "tweet": text });
 		console.log(tweetJson);
-		const url = "http://localhost:4000/api/post";
+		//todo make api port dynamic
+		const url = `http://localhost:8081/api/post`;
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
-			mode: "same-origin", // no-cors, *cors, same-origin
+			mode: "cors", // no-cors, *cors, same-origin
 			headers: {
 				"Content-Type": "application/json"
 				// 'Content-Type': 'application/x-www-form-urlencoded',
