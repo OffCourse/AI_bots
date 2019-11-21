@@ -3,6 +3,10 @@ function getRandomInt(max) {
 }
 
 async function onChange() {
+	console.log("true?", (document.getElementById("textarea").value == new RegExp(/$./)));
+	if (!document.getElementById("textarea").value == (/$./)){
+		return;
+	}
 	// const axios = require("axios");
 	let buttonGroup = document.querySelector(".btn-group");
 
@@ -24,7 +28,7 @@ async function onChange() {
 		const tweetJson = JSON.stringify({ "tweet": text });
 		console.log(tweetJson);
 		//todo make api port dynamic
-		const url = `http://localhost:${process.env.API_PORT}/api/post`;
+		const url = "http://localhost:4000/api/post";
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			mode: "cors", // no-cors, *cors, same-origin
@@ -36,22 +40,19 @@ async function onChange() {
 		});
 
 		response.json().then(json => {
-			console.log(json);
-			hashtags = json;
+			hashtags = JSON.parse(json);
+			for (let index = 0; index < amountOfTags; index++) {
+				let button = document.createElement("BUTTON");
+				button.innerHTML = "#" + hashtags[index]; 
+				button.onclick = function () {
+					button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)];
+				};
+				buttonGroup.appendChild(button);
+			}
 		});
 
 
-		for (let index = 0; index < amountOfTags; index++) {
-
-			let button = document.createElement("BUTTON");
-			button.innerHTML = "#" + hashtags[index]; 
-			button.onclick = function () {
-				button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)];
-			};
-			console.log(button);
-			buttonGroup.appendChild(button);
-			console.log(buttonGroup);
-		}
+		
 	}
 
 	document.getElementById("result").innerHTML = text + start;
