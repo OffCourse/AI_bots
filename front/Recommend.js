@@ -3,10 +3,6 @@ function getRandomInt(max) {
 }
 
 async function onChange() {
-	console.log("true?", (document.getElementById("textarea").value == new RegExp(/$./)));
-	if (!document.getElementById("textarea").value == (/$./)){
-		return;
-	}
 	// const axios = require("axios");
 	let buttonGroup = document.querySelector(".btn-group");
 
