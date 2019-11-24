@@ -109,7 +109,7 @@ function evaluateKmeans(data, target, clusters) {
 
 	//Apply K-means algorithm
 	const model = skmeans(vectors, clusters);
-	console.log(model);
+
 	//Test target on model
 	const evaluation = model.test(target.vector);
 
@@ -119,7 +119,7 @@ function evaluateKmeans(data, target, clusters) {
 	var recommendations = [];
 	//Get indexes of data in the same cluster as the target
 	for (var i = 0; i < model.idxs.length; i++) {
-		//Ignore last element, this is the target itself
+		//Ignore the target itself
 		if (model.idxs[i] === clusterIndex && data[i].label !== target.label) {
 			recommendations.push(data[i].label);
 		}
