@@ -1,0 +1,64 @@
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+        <title>Tweet-IT</title>
+        <link rel='icon' href='favicon.ico'>
+    </head>
+
+    <body>
+        <div align="center">
+            <h1>Tweet-IT</h1>
+            <textarea id="textarea"></textarea>
+            <h3>How many tags do you want?</h3>
+            <select id="amountOfTags" oninput="onChange()">
+                <option>1</option>
+                <option>2</option>
+                <option selected = "selected">3</option>
+                <option>4</option>
+            </select>
+            <button onclick="onChange()">Generate hashtags</button>
+            <h1 id="result"></h1>
+            <div class="btn-group">
+            </div> 
+        </div>      
+        <script src="Recommend.js">
+        </script>
+
+    </body>
+
+    <style>
+        body {
+            background-image: url("/img/matrix.png");
+            background-color: black;
+            color: white;
+        }
+        select {
+            width: 80px;
+            font-size: 15px;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h3 {
+            font-size: 30px;
+        }
+        textarea {
+            width: 750px;
+            height: 100px;
+            padding: 0px;
+            font-size: 30px;
+        }
+        .btn-group button {
+            color: white;
+            font-size: 100px;
+            background:none;
+            border:none;           
+        }
+        .btn-group button:hover {
+            color: red;
+        }
+    </style>
+
+</html>

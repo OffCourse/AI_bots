@@ -106,4 +106,8 @@ public/
 # Ignore all local history of files
 .history
 
+### GunDB ###
+# Ignore locally stored data in the Gun database
+radata/
+
 # End of https://www.gitignore.io/api/node,visualstudiocode
