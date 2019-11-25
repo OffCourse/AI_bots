@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node api/api.js"
+    "build": "start node api/api.js & start node front/Server.js"
   },
   "repository": {
     "type": "git",

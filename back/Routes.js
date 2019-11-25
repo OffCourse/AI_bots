@@ -23,10 +23,9 @@ router.post("/post", async function (req, res) {
 			}
 		}
 		// console.log(result);
-		const endResult = await JSON.stringify({"result" : Array.from(result)});
+		const endResult = JSON.stringify({"result" : Array.from(result)});
 		// console.log(result2);
 		res.json(endResult);
-
 	} catch (error) {
 		console.log(error);
 	}

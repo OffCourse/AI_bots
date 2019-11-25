@@ -10,7 +10,7 @@
     <body>
         <div align="center">
             <h1>Tweet-IT</h1>
-            <textarea id="textarea" oninput="onChange()"></textarea>
+            <textarea id="textarea"></textarea>
             <h3>How many tags do you want?</h3>
             <select id="amountOfTags" oninput="onChange()">
                 <option>1</option>
@@ -18,13 +18,11 @@
                 <option selected = "selected">3</option>
                 <option>4</option>
             </select>
+            <button onclick="onChange()">Generate hashtags</button>
             <h1 id="result"></h1>
             <div class="btn-group">
             </div> 
-
-        </div>
-
-        
+        </div>      
         <script src="Recommend.js">
         </script>
 

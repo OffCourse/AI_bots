@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 //step 1) require the modules we need
 var
 	http = require("http"),
@@ -78,4 +80,5 @@ function requestHandler(req, res) {
 }
 
 //step 2) create the server
-http.createServer(requestHandler).listen(3000);
+http.createServer(requestHandler).listen(process.env.UI_PORT);
+console.log(process.env.UI_PORT);
