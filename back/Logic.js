@@ -4,39 +4,39 @@ const discluded = require("./DiscludedWords.json");
 
 function setOptions(username, maxId = 0, postsPerCall) {
 	let options;
-	if(maxId == 0) {
-		options = { 
+	if (maxId == 0) {
+		options = {
 			method: "GET",
 			url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-			qs: { 
-				screen_name: username, 
-				include_rts: 1, 
-				exclude_replies: true, 
+			qs: {
+				screen_name: username,
+				include_rts: 1,
+				exclude_replies: true,
 				count: `${postsPerCall}`,
 				tweet_mode: "extended"
 			},
-			headers: { 
+			headers: {
 				Authorization: "Bearer " + process.env.BEARER_TWITTER
 			},
 			json: true
 		};
 	} else {
-		options = { 
+		options = {
 			method: "GET",
 			url: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-			qs: { 
-				screen_name: username, 
-				include_rts: 1, 
-				exclude_replies: true, 
+			qs: {
+				screen_name: username,
+				include_rts: 1,
+				exclude_replies: true,
 				count: `${postsPerCall}`,
 				tweet_mode: "extended",
 				max_id: maxId
 			},
-			headers: { 
+			headers: {
 				Authorization: "Bearer " + process.env.BEARER_TWITTER
 			},
 			json: true
-		};		
+		};
 	}
 	return options;
 }
@@ -53,44 +53,40 @@ exports.getHashtags = async (username, postId = 0, postsPerCall) => {
 			for (let index = 0; index < resp.length; index++) {
 				lastID = resp[index].id;
 
-				try{
-					if(resp[index].full_text.match(/RT \S+/)){
+				try {
+					if (resp[index].full_text.match(/RT \S+/)) {
 						entries.push(resp[index].retweeted_status.full_text);
 					} else {
 						entries.push(resp[index].full_text);
 					}
-				} catch(error) {
+				} catch (error) {
 					//
 				}
 			}
-			return {entries: entries, lastID: lastID, totalPosts: totalPosts};
+			return { entries: entries, lastID: lastID, totalPosts: totalPosts };
 		})
 		.catch(function (error) {
 			console.log(error);
-		})
-	;
+		});
 };
 
-exports.postCleanup = async (textList, username) => {
+exports.postCleanup = async (textList, username, hashtags) => {
 	let cleanedList = [];
-	textList.forEach(element => {
+	await textList.forEach(async element => {
 		let post = element;
 		try {
-			post = post.toLowerCase();
-			var expStr = discluded.join("|");
-			post = post.replace(/https?:\S+/g, "");								// remove urls
-			post = post.replace(new RegExp(("\\b("+expStr+")\\b"), "g"), " ");	// remove discluded words
-			post = post.replace(/\n/g, " ");									// remove breaklines
-			post = post.replace(/[^a-z+ ]/g, " ");								// remove non[a-z] chars
-			post = post.replace(/(^| ).( |$)/g, " ");							// remove single letters
-			post = post.replace(new RegExp(username, "g"), "");					// remove username
-			//post = post.replace(/\s+/g, " ");									// replace multiple blank spaces with one
+			post = await cleanPost(post, username, hashtags);
 			cleanedList.push(post);
 		} catch (error) {
 			//console.log(error);
 		}
 	});
 	return cleanedList;
+};
+
+exports.cleanSinglePost = async (post, username) => {
+	post = await cleanPost(post, username, false);
+	return post;
 };
 
 exports.countWords = async (list) => {
@@ -123,3 +119,20 @@ exports.countWords = async (list) => {
 		console.log(error);
 	}
 };
+
+async function cleanPost(post, username, hashtags) {
+	post = post.toLowerCase();
+	var expStr = discluded.join("|");
+	post = post.replace(/https?:\S+/g, "");										// remove urls
+	post = post.replace(new RegExp(("\\b(" + expStr + ")\\b"), "g"), " ");		// remove discluded words
+	post = post.replace(/\n/g, " ");											// remove breaklines
+	if (hashtags == true) {
+		post = post.replace(/[^a-z+ | ^#]/g, " ");								// remove non[a-z] chars, except #
+	} else {
+		post = post.replace(/[^a-z+]/g, " ");									// remove non[a-z] chars
+	}
+	post = post.replace(/(^| ).( |$)/g, " ");									// remove single letters
+	post = post.replace(new RegExp(username, "g"), "");							// remove username
+	//post = post.replace(/\s+/g, " ");											// replace multiple blank spaces with one
+	return post;
+}

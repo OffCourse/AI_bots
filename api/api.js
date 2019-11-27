@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const express = require("express");
 var Kmeans = require("../back/Kmeans");
 const recommend = require("../back/Recommend");
+const knnModule = require("../back/KNN.js");
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -48,6 +50,13 @@ app.post("/api/post", async function (req, res) {
 	} catch (error) {
 		console.log(error);
 	}
+});
+
+app.post("/knn", async function (req, res) {
+	const KNN = new knnModule(req.body.username);
+	const result = await KNN.getRecommendation(req.body.tweet, 3);
+	// const json = JSON.stringify(result);
+	res.json(result);
 });
 
 app.put("/", (req, res) => {

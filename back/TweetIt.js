@@ -11,7 +11,7 @@ class TweetIt {
 		return classifiedUsers;
 	}
 
-	async getText(usr){
+	async getText(usr, hashtags){
 		let lastId; 						// Id of last retrieved post
 		let listOfPosts = [];				// List of retrieved posts
 		let postsPerCall = 200; 			// Amount of posts to retrieve per call
@@ -23,8 +23,8 @@ class TweetIt {
 			lastId = object.lastID; 
 			retrievedPosts += postsPerCall;
 			totalPosts = object.totalPosts;
-			let posts = await Logic.postCleanup(object.entries, usr);
-			posts.forEach(post => {
+			let posts = await Logic.postCleanup(object.entries, usr, hashtags);
+			await posts.forEach(post => {
 				listOfPosts.push(post);
 			});
 		} while (retrievedPosts < maxRetrievablePosts && retrievedPosts < totalPosts);
