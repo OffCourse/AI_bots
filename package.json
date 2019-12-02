@@ -1,6 +1,10 @@
 {
   "name": "offcourse_",
   "version": "1.0.0",
+  "engines": {
+    "node": "10.16.3",
+    "npm": "6.9.0"
+  },
   "description": "TweetIt",
   "main": "TweetIt.js",
   "dependencies": {
@@ -23,7 +27,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "start node api/api.js & start node front/Server.js"
+    "start" : "start node api/api.js & start node front/Server.js"
   },
   "repository": {
     "type": "git",
