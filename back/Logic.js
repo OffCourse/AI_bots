@@ -84,7 +84,7 @@ exports.postCleanup = async (textList, username) => {
 			post = post.replace(/[^a-z+ ]/g, " ");								// remove non[a-z] chars
 			post = post.replace(/(^| ).( |$)/g, " ");							// remove single letters
 			post = post.replace(new RegExp(username, "g"), "");					// remove username
-			//post = post.replace(/\s+/g, " ");									// replace multiple blank spaces with one
+			post = post.replace(/\s+/g, " ");									// replace multiple blank spaces with one
 			cleanedList.push(post);
 		} catch (error) {
 			//console.log(error);
