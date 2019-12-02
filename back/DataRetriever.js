@@ -1,14 +1,14 @@
-const saveFilePath = "./data/tweets.json";
-const loadFilePath = "." + saveFilePath;
-
 exports.getTweets = async () => {
-	let tweets;
+	const saveFilePath = "./data/tweets.json";
+	const loadFilePath = "." + saveFilePath;
+	let tweetList;
 	try {
-		tweets = await require(loadFilePath);
+		tweetList = await require(loadFilePath);
 	} catch (error) {
-		tweets = await retrieveTweets();
+		tweetList = await retrieveTweets();
+		await saveTweets(tweetList, saveFilePath);
 	}
-	return tweets;
+	return tweetList;
 };
 
 async function retrieveTweets() {
@@ -18,23 +18,22 @@ async function retrieveTweets() {
 	const tweetIt = new TweetIt();
 	let tweetList = [];
 
-	for (let index in users) {
-		console.log(users[index]);
-		let tweets = await tweetIt.getText(users[index]);
-		let cleanTweets = await Logic.postCleanup(tweets, users[index]);
+	for (let user of users) {
+		console.log(`Retrieving user ${user}`);
+		let tweets = await tweetIt.getText(user);
+		let cleanTweets = await Logic.postCleanup(tweets, user);
 		cleanTweets.forEach(cleanTweet => {
 			if(cleanTweet.length > 1){
 				tweetList.push(cleanTweet);
 			}
 		});
 	}
-	await saveTweets(tweetList);
 	return tweetList;
 }
 
-async function saveTweets(tweetList) {
+async function saveTweets(tweetList, filePath) {
 	console.log("begin writing");
 	const fs = require("fs");
-	fs.writeFile(saveFilePath, JSON.stringify(tweetList), function () { });
+	fs.writeFile(filePath, JSON.stringify(tweetList), function () { });
 	console.log("done");
 }
