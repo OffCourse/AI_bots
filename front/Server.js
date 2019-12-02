@@ -80,5 +80,6 @@ function requestHandler(req, res) {
 }
 
 //step 2) create the server
-http.createServer(requestHandler).listen(process.env.UI_PORT);
-console.log(process.env.UI_PORT);
+const ui_port = process.env.UI_PORT || 8081;
+http.createServer(requestHandler).listen(ui_port);
+console.log(ui_port);
