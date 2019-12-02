@@ -7,7 +7,6 @@ var Kmeans = require("../back/Kmeans");
 const recommend = require("../back/Recommend");
 const knnModule = require("../back/KNN.js");
 
-
 const app = express();
 app.use(bodyParser.json());
 

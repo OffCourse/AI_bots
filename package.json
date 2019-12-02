@@ -27,7 +27,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "start node api/api.js & start node front/Server.js"
+    "start" : "node api/api.js & node front/Server.js"
   },
   "repository": {
     "type": "git",
