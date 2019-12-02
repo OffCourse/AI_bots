@@ -6,7 +6,7 @@
     "npm": "6.9.0"
   },
   "description": "TweetIt",
-  "main": "TweetIt.js",
+  "main": "api/api.js",
   "dependencies": {
     "@tensorflow-models/knn-classifier": "^1.2.1",
     "@tensorflow-models/universal-sentence-encoder": "^1.2.0",
