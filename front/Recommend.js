@@ -21,10 +21,10 @@ async function onChange() {
 		// console.log("Spaghetti");
 
 
-		const tweetJson = JSON.stringify({ "tweet": text });
+		const tweetJson = JSON.stringify({ "username": "yeehaa", "tweet": text });
 		console.log(tweetJson);
 		//todo make api port dynamic
-		const url = "http://localhost:4000/api/post";
+		const url = "http://localhost:4000/api/knn";
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			mode: "cors", // no-cors, *cors, same-origin
@@ -36,12 +36,13 @@ async function onChange() {
 		});
 
 		response.json().then(json => {
-			hashtags = JSON.parse(json);
+			hashtags = json;
+			console.log(hashtags);
 			for (let index = 0; index < amountOfTags; index++) {
 				let button = document.createElement("BUTTON");
-				button.innerHTML = "#" + hashtags[index]; 
+				button.innerHTML = hashtags[index].key; 
 				button.onclick = function () {
-					button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)];
+					button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)].key;
 				};
 				buttonGroup.appendChild(button);
 			}

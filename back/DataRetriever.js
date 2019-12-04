@@ -1,4 +1,6 @@
-exports.getTweets = async () => {
+getTweets();
+
+async function getTweets () {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
 	let tweetList;
@@ -9,7 +11,7 @@ exports.getTweets = async () => {
 		await saveTweets(tweetList, saveFilePath);
 	}
 	return tweetList;
-};
+}
 
 async function retrieveTweets() {
 	const users = require("../data/users.json");

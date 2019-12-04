@@ -72,6 +72,7 @@ class KNN {
 
 	async getRawData() {
 		try {
+			// const text = await require("../data/tweets.json");
 			const text = await require(`../data/twitter_posts_${this.username}.json`);
 			// const text = await require(`./data/twitter_posts_${this.username}_test.json`);
 			return text;

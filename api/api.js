@@ -52,7 +52,7 @@ app.post("/api/post", async function (req, res) {
 	}
 });
 
-app.post("/knn", async function (req, res) {
+app.post("/api/knn", async function (req, res) {
 	const KNN = new knnModule(req.body.username);
 	const result = await KNN.getRecommendation(req.body.tweet, 3);
 	// const json = JSON.stringify(result);
