@@ -57,9 +57,14 @@ function shapeData(data, target) {
 	data.forEach(element => {
 		element.vector = element.vector.slice(0, vectorLimit);
 	});
-	target.vector = target.vector.slice(0, vectorLimit);
+	//target.vector = target.vector.slice(0, vectorLimit);
 
 	return { data: data, target: target };
+}
+
+function prepareDataOneHot(rawData, targetLabel) {
+	let wordpool = createWordPool(rawData);
+
 }
 
 
@@ -67,11 +72,13 @@ function shapeData(data, target) {
 function getRecommendations(targetLabel) {
 	targetLabel = targetLabel.toLowerCase();
 	const rawData = require("../cleaned_tweets.json");
-	const preparedData = prepareData(rawData, targetLabel);
+	//const preparedData = prepareData(rawData, targetLabel);
 	//const shapedData = shapeData(preparedData.data, preparedData.target);
 	//const recommendations = evaluateKmeans(shapedData.data, shapedData.target, 25);
-	const recommendations = evaluate(preparedData.data, preparedData.target);
-	return recommendations;
+	//const recommendations = evaluate(preparedData.data, preparedData.target);
+
+	const preparedData = prepareDataOneHot(rawData, targetLabel)
+	//return recommendations;
 }
 
 function evaluate(data, target) {
@@ -125,6 +132,19 @@ function evaluateKmeans(data, target, clusters) {
 		}
 	}
 	return recommendations;
+}
+
+function createWordPool(data) {
+	var dict = [];
+	data.forEach(string => {
+		var words = splitString(string);
+		words.forEach(word => {
+			if (!dict.some(element => element === word)) {
+				dict.push(word);
+			}
+		});
+	});
+	return dict;
 }
 
 function createDictionary(data) {

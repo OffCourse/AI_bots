@@ -38,8 +38,9 @@ app.post("/api/post", async function (req, res) {
 		for (var i = 0; i < arrayWords.length; i++) {
 			console.log("Word: " + arrayWords[i]);
 			const temp = await Kmeans.getRecommendations(arrayWords[i]);
-			console.log("Temp: " + temp);
-			for (var j = 0; j < 5; j++) {
+			console.log("Reccomendations: " + temp);
+			let amountOfReccomendations = 100;
+			for (var j = 0; j < amountOfReccomendations; j++) {
 				result.add(temp[j]);
 			}
 		}

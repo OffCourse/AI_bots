@@ -16,6 +16,7 @@ async function onChange() {
 	const text = document.getElementById("textarea").value;
 	var start = "";
 	var hashtags = [];
+	let hashtagCount = 0;
 	if (text.split(" ").length > 5) {
 		const amountOfTags = document.getElementById("amountOfTags").value;
 		// console.log("Spaghetti");
@@ -37,19 +38,17 @@ async function onChange() {
 
 		response.json().then(json => {
 			hashtags = JSON.parse(json);
+			
 			for (let index = 0; index < amountOfTags; index++) {
 				let button = document.createElement("BUTTON");
 				button.innerHTML = "#" + hashtags[index]; 
 				button.onclick = function () {
-					button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)];
+					hashtagCount += 1;		
+					button.innerHTML = "#" + hashtags[+hashtagCount + +amountOfTags];
 				};
 				buttonGroup.appendChild(button);
 			}
-		});
-
-
-		
+		});	
 	}
-
 	document.getElementById("result").innerHTML = text + start;
 }
