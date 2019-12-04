@@ -27,24 +27,13 @@ app.post("/", (req, res) => {
 
 app.post("/api/post", async function (req, res) {
 	try {
-		const tweet = [];
-		const result = new Set();
-		tweet.push(req.body.tweet);
-		console.log(req.body.tweet);
-		const cleanedWords = await Logic.postCleanup(tweet, "yeehaa");
-		console.log("cleaned", cleanedWords);
-		const arrayWords = await cleanedWords[0].replace(/\s\s+/g, " ").split(" ");
-		console.log("array", arrayWords);
-		for (var i = 0; i < arrayWords.length; i++) {
-			console.log("Word: " + arrayWords[i]);
-			const temp = await Kmeans.getRecommendations(arrayWords[i]);
-			console.log("Reccomendations: " + temp);
-			let amountOfReccomendations = 100;
-			for (var j = 0; j < amountOfReccomendations; j++) {
-				result.add(temp[j]);
-			}
-		}
-		const endResult = JSON.stringify(Array.from(result));
+		let tweet = req.body.tweet;
+
+		//Todo: add username variable
+		tweet = await Logic.postCleanup([tweet], "yeehaa");
+		const reccomendations = await Kmeans.getRecommendations(tweet[0]);
+
+		const endResult = JSON.stringify(Array.from(reccomendations));
 		res.json(endResult);
 	} catch (error) {
 		console.log(error);

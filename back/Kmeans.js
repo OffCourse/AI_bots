@@ -1,6 +1,6 @@
-// getRecommendations("trump").then(function(result) {
-// 	console.log(result);
-// });
+const dataRetriever = require("./DataRetriever");
+
+var wordPool;
 
 function prepareData(rawData, targetLabel) {
 	var dataList = [];
@@ -62,23 +62,40 @@ function shapeData(data, target) {
 	return { data: data, target: target };
 }
 
-function prepareDataOneHot(rawData, targetLabel) {
-	let wordpool = createWordPool(rawData);
+async function prepareDataOneHot() {
+	console.log("retrieving tweets");
+	let tweets = await dataRetriever.getTweets();
+	wordPool = createWordPool(tweets);
+	console.log("Vectorizing tweets");
+	let tweetVectors = [];
+	tweets.forEach(tweet => {
+		let tweetVector = vectorizeTweet(tweet);
+		tweetVectors.push(tweetVector);
+	});
 
+	return tweetVectors;
 }
 
-
-
-function getRecommendations(targetLabel) {
+async function getRecommendations(targetLabel) {
 	targetLabel = targetLabel.toLowerCase();
-	const rawData = require("../cleaned_tweets.json");
+	//const rawData = require("../cleaned_tweets.json");
 	//const preparedData = prepareData(rawData, targetLabel);
 	//const shapedData = shapeData(preparedData.data, preparedData.target);
-	//const recommendations = evaluateKmeans(shapedData.data, shapedData.target, 25);
+	
 	//const recommendations = evaluate(preparedData.data, preparedData.target);
 
-	const preparedData = prepareDataOneHot(rawData, targetLabel)
-	//return recommendations;
+	const vectorizedData = await prepareDataOneHot();
+	const vectorizedTarget = vectorizeTweet(targetLabel);
+	let recommendations = evaluateKmeans(vectorizedData, vectorizedTarget, 4);
+	let result = [];
+	for (let index = 0; index < recommendations.length; index++) {
+		recommendations[index] = unVectorizeTweet(recommendations[index]);
+		recommendations[index].forEach(recommendation => {
+			result.push(recommendation);
+		});
+	}
+
+	return result;
 }
 
 function evaluate(data, target) {
@@ -108,33 +125,33 @@ function evaluate(data, target) {
 function evaluateKmeans(data, target, clusters) {
 	const skmeans = require("skmeans");
 
-	//Get vectors from data
-	var vectors = [];
-	data.forEach(entry => {
-		vectors.push(entry.vector);
-	});
-
 	//Apply K-means algorithm
-	const model = skmeans(vectors, clusters);
+	console.log("Training model");
+	const model = skmeans(data, clusters);
 
 	//Test target on model
-	const evaluation = model.test(target.vector);
-
+	const evaluation = model.test(target);
+	
 	//Get cluster index of target
 	var clusterIndex = evaluation.idx;
 
 	var recommendations = [];
+	let clusterLengths = new Array(clusters).fill(0);
 	//Get indexes of data in the same cluster as the target
 	for (var i = 0; i < model.idxs.length; i++) {
 		//Ignore last element, this is the target itself
-		if (model.idxs[i] === clusterIndex && data[i].label !== target.label) {
-			recommendations.push(data[i].label);
+		clusterLengths[model.idxs[i]] += 1;
+		if (model.idxs[i] === clusterIndex && data[i] !== target) {
+			recommendations.push(data[i]);
 		}
 	}
+	console.log("clusterLength list: " + clusterLengths);
+	console.log("target cluster: " + evaluation.idx);
 	return recommendations;
 }
 
 function createWordPool(data) {
+	console.log("Creating word pool");
 	var dict = [];
 	data.forEach(string => {
 		var words = splitString(string);
@@ -166,6 +183,29 @@ function splitString(string){
 	// eslint-disable-next-line quotes
 	words = words.filter(word => word != ''); //Remove empty strings
 	return words;
+}
+
+function vectorizeTweet(tweet){
+	let tweetVector = new Array(wordPool.length).fill(0);
+	let words = splitString(tweet);
+	words.forEach(word => {
+		wordPool.forEach(function(poolWord, index) {
+			if(word === poolWord){
+				tweetVector[index] += 1;
+			}
+		});
+	});
+	return tweetVector;
+}
+
+function unVectorizeTweet(vectorizedTweet){
+	let wordList = [];
+	vectorizedTweet.forEach(function (vectorizedWord, index) {
+		if(vectorizedWord >= 1){
+			wordList.push(wordPool[index]);
+		} 
+	}); 
+	return wordList;
 }
 
 module.exports.getRecommendations = getRecommendations;
