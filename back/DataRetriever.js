@@ -1,36 +1,67 @@
-getTweets();
+getTweets().then(function (result) {
+	console.log(result);
+});
 
-async function getTweets () {
+async function getTweets() {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
-	let tweetList;
+	const users = require("../data/users.json");
+	let usersToRetrieve = []; 	// Users yet to retrieve from the API
+	let tweetsObj = [];			// Object containing the usernames and their tweets
+
 	try {
-		tweetList = await require(loadFilePath);
-	} catch (error) {
-		tweetList = await retrieveTweets();
-		await saveTweets(tweetList, saveFilePath);
+		tweetsObj = await require(loadFilePath);
+		// eslint-disable-next-line no-empty
+	} catch (error) { }
+
+	// Check for each user if their data is already in the file
+	// If not, the data of the specified user will be retrieved
+	users.forEach(user => {
+		if (tweetsObj == null || !tweetsObj.some(element => element.username === user)) {
+			usersToRetrieve.push(user);
+		}
+	});
+
+	// If there are users that need to be retrieved from the API,
+	// Their data is appended to tweetsObj
+	if (usersToRetrieve != null) {
+		let newTweetsObj = await retrieveTweets(usersToRetrieve);
+		newTweetsObj.forEach(tweetObj => {
+			tweetsObj.push(tweetObj);
+		});
+		await saveTweets(tweetsObj, saveFilePath);
 	}
-	return tweetList;
+
+	// Extract tweets from tweetsObj, so that the tweets are returned instead of the object
+	let tweets = [];
+	tweetsObj.forEach(tweetObj => {
+		tweetObj.tweets.forEach(tweet => {
+			tweets.push(tweet);
+		});
+	});
+
+	return tweets;
 }
 
-async function retrieveTweets() {
-	const users = require("../data/users.json");
+async function retrieveTweets(users) {
 	const Logic = require("./Logic");
 	const TweetIt = require("./TweetIt");
 	const tweetIt = new TweetIt();
-	let tweetList = [];
+	let tweetsObj = [];
 
 	for (let user of users) {
+		let tweetList = [];
 		console.log(`Retrieving user ${user}`);
 		let tweets = await tweetIt.getText(user);
 		let cleanTweets = await Logic.postCleanup(tweets, user);
 		cleanTweets.forEach(cleanTweet => {
-			if(cleanTweet.length > 1){
+			if (cleanTweet.length > 1) {
 				tweetList.push(cleanTweet);
 			}
 		});
+		tweetsObj.push({ username: user, tweets: tweetList });
 	}
-	return tweetList;
+	return tweetsObj;
 }
 
 async function saveTweets(tweetList, filePath) {
