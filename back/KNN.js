@@ -45,7 +45,7 @@ class KNN {
 					this.classifier.addExample(tf.tensor(vector.example), vector.label);
 				});
 				//Saves the dataset for the next time
-				this.saveDataset();
+				await this.saveDataset();
 			}
 		} catch (error) {
 			console.log(error);
@@ -78,7 +78,7 @@ class KNN {
 			return text;
 		} catch (error) {
 			//Get all tweets if there isn't a file available.
-			const listOfPosts = await TweetIt.getText("yeehaa", true);
+			const listOfPosts = await TweetIt.getText(this.username, true);
 			fs.writeFile(`../data/twitter_posts_${this.username}.json`, JSON.stringify(listOfPosts), function () { });
 			return listOfPosts;
 		}
