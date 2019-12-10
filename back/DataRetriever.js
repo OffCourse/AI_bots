@@ -2,10 +2,10 @@ getTweets().then(function (result) {
 	console.log(result);
 });
 
-async function getTweets() {
+async function getTweets(forceRetrieve = false) {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
-	const users = require("../data/users.json");
+	const userList = require("../data/users.json");
 	let usersToRetrieve = []; 	// Users yet to retrieve from the API
 	let tweetsObj = [];			// Object containing the usernames and their tweets
 
@@ -14,17 +14,22 @@ async function getTweets() {
 		// eslint-disable-next-line no-empty
 	} catch (error) { }
 
-	// Check for each user if their data is already in the file
-	// If not, the data of the specified user will be retrieved
-	users.forEach(user => {
-		if (tweetsObj == null || !tweetsObj.some(element => element.username === user)) {
-			usersToRetrieve.push(user);
-		}
-	});
+	if (tweetsObj.length == 0 || forceRetrieve == true){
+		usersToRetrieve = userList.slice();
+	}
+	else {
+		// Check for each user if their data is already in the file
+		// If not, the data of the specified user will be retrieved
+		userList.forEach(user => {
+			if (!tweetsObj.some(element => element.username == user)) {
+				usersToRetrieve.push(user);
+			}
+		});
+	}
 
 	// If there are users that need to be retrieved from the API,
 	// Their data is appended to tweetsObj
-	if (usersToRetrieve != null) {
+	if (usersToRetrieve.length > 0) {
 		let newTweetsObj = await retrieveTweets(usersToRetrieve);
 		newTweetsObj.forEach(tweetObj => {
 			tweetsObj.push(tweetObj);
