@@ -6,7 +6,7 @@ async function addUser() {
 	const text = document.getElementById("usernameTextarea").value;
 
 	const username = JSON.stringify({ "username": text });
-	console.log("Adding: " + username + " to the database");
+	console.log("Checking if " + username + " is a valid username.");
 	//todo make api port dynamic
 	const url = "http://localhost:4000/api/addUser";
 	const response = await fetch(url, {
