@@ -61,15 +61,11 @@ async function onChange() {
 				let button = document.createElement("BUTTON");
 				button.innerHTML = hashtags[index].key; 
 				button.onclick = function () {
-					button.innerHTML = "#" + hashtags[getRandomInt(hashtags.length)].key;
+					button.innerHTML = hashtags[getRandomInt(hashtags.length)].key;
 				};
 				buttonGroup.appendChild(button);
 			}
 		});
-
-
-		
 	}
-
 	document.getElementById("result").innerHTML = text + start;
 }
