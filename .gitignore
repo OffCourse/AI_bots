@@ -110,4 +110,7 @@ public/
 # Ignore locally stored data in the Gun database
 radata/
 
+### Json Storage ###
+data/tweets.json
+
 # End of https://www.gitignore.io/api/node,visualstudiocode
