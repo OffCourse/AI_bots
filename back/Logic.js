@@ -136,3 +136,13 @@ async function cleanPost(post, username, hashtags) {
 	//post = post.replace(/\s+/g, " ");											// replace multiple blank spaces with one
 	return post;
 }
+
+exports.addUser = async (username) => {
+	let userList = require("../data/users.json");
+	if (!userList.some(element => element == username)) {
+		userList.push(username);
+	}
+
+	const fs = require("fs");
+	fs.writeFile("./data/users.json", JSON.stringify(userList), function () { });
+};

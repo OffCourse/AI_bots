@@ -2,6 +2,25 @@ function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
+async function addUser() {
+	const text = document.getElementById("usernameTextarea").value;
+
+	const username = JSON.stringify({ "username": text });
+	console.log("Adding: " + username + " to the database");
+	//todo make api port dynamic
+	const url = "http://localhost:4000/api/addUser";
+	const response = await fetch(url, {
+		method: "POST", // *GET, POST, PUT, DELETE, etc.
+		mode: "cors", // no-cors, *cors, same-origin
+		headers: {
+			"Content-Type": "application/json"
+			// 'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body: username
+	});
+
+}
+
 async function onChange() {
 	// const axios = require("axios");
 	let buttonGroup = document.querySelector(".btn-group");
