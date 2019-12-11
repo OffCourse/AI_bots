@@ -26,7 +26,7 @@ var root = {
 };
 
 var app = express();
-app.use("/knn", express_graphql ({
+app.use("/graphQl", express_graphql ({
 	schema: schema,
 	rootValue: root,
 	graphiql: true
