@@ -1,4 +1,5 @@
 const tweetItModule = require("./TweetIt");
+const dataRetriever = require("./DataRetriever");
 const TweetIt = new tweetItModule();
 const Logic = require("./Logic.js");
 var bagOfWords = require("./BagOfWords.js"),
@@ -72,14 +73,11 @@ class KNN {
 
 	async getRawData() {
 		try {
-			// const text = await require("../data/tweets.json");
-			const text = await require(`../data/twitter_posts_${this.username}.json`);
-			// const text = await require(`./data/twitter_posts_${this.username}_test.json`);
+			const text = await dataRetriever.getTweets(true);
 			return text;
 		} catch (error) {
 			//Get all tweets if there isn't a file available.
-			const listOfPosts = await TweetIt.getText(this.username, true);
-			fs.writeFile(`../data/twitter_posts_${this.username}.json`, JSON.stringify(listOfPosts), function () { });
+			const listOfPosts = await dataRetriever.getTweets();
 			return listOfPosts;
 		}
 	}

@@ -1,8 +1,8 @@
-getTweets().then(function (result) {
-	console.log(result);
-});
+// getTweets().then(function (result) {
+// 	console.log(result);
+// });
 
-async function getTweets(forceRetrieve = false) {
+exports.getTweets = async (forceRetrieve = false) => {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
 	const userList = require("../data/users.json");
