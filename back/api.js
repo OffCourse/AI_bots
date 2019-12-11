@@ -1,11 +1,11 @@
 require("dotenv").config();
 const cors = require("cors");
-var Logic = require("../back/Logic");
+var Logic = require("./Logic");
 const bodyParser = require("body-parser");
 const express = require("express");
-var Kmeans = require("../back/Kmeans");
-const recommend = require("../back/Recommend");
-const knnModule = require("../back/KNN.js");
+var Kmeans = require("./Kmeans");
+const recommend = require("./Recommend");
+const knnModule = require("./KNN.js");
 
 
 const app = express();

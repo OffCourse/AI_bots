@@ -26,7 +26,10 @@ class KNN {
 		const result = await this.classifier.predictClass(tf.tensor(bow(cleanTweet, this.voc)), neighbors);
 		//Put result in a list so it can be sorted
 		for (var key in result.confidences) {
-			output.push({ key: key, confidence: result.confidences[key] });
+			output.push({
+				key: key,
+				confidence: result.confidences[key]
+			});
 		}
 		output.sort(this.compare);
 		return output;
@@ -64,7 +67,10 @@ class KNN {
 			let temp = post.match(/#\w+/g);
 			if (temp != null) {
 				const vector = bow(post, this.voc);
-				result.push({ example: vector, label: temp[0] });
+				result.push({
+					example: vector,
+					label: temp[0]
+				});
 			}
 		});
 		// fs.writeFile(`./data/twitter_vector_${this.username}.json`, JSON.stringify(result), function () { });
@@ -73,7 +79,7 @@ class KNN {
 
 	async getRawData() {
 		try {
-			const text = await dataRetriever.getTweets(true);
+			const text = await dataRetriever.getTweets();
 			return text;
 		} catch (error) {
 			//Get all tweets if there isn't a file available.
@@ -87,10 +93,11 @@ class KNN {
 		const jsonDataset = [];
 
 		for (var key in dataset) {
-			jsonDataset.push({ [key]: dataset[key].arraySync() });
+			jsonDataset.push({
+				[key]: dataset[key].arraySync()
+			});
 		}
-
-		fs.writeFile(`../data/twitter_knn_dataset_${this.username}.json`, JSON.stringify(jsonDataset), function () { });
+		fs.writeFile(`data/twitter_knn_dataset_${this.username}.json`, JSON.stringify(jsonDataset), function () {});
 		console.log("Successfully saved the dataset for user [" + this.username + "]");
 	}
 
@@ -115,7 +122,7 @@ class KNN {
 
 	async saveVocabulary(text) {
 		this.voc = dict(text);
-		fs.writeFile(`../data/twitter_knn_vocabulary_${this.username}.json`, JSON.stringify(this.voc), function () { });
+		fs.writeFileSync(`data/twitter_knn_vocabulary_${this.username}.json`, JSON.stringify(this.voc), function () {});
 		console.log("Succesfully saved the vocabulary for user [" + this.username + "]");
 	}
 

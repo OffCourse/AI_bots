@@ -1,7 +1,7 @@
 var express = require("express");
 var express_graphql = require("express-graphql");
 var { buildSchema } = require("graphql");
-const knnModule = require("../back/KNN.js");
+const knnModule = require("./KNN.js");
 const cors = require("cors");
 
 var schema = buildSchema(`
@@ -35,4 +35,3 @@ app.use(cors());
 app.listen(process.env.API_PORT, () =>
 	console.log(`Example app listening on port ${process.env.API_PORT}!`),
 );
-
