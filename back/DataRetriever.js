@@ -15,6 +15,7 @@ async function getTweets(forceRetrieve = false) {
 	} catch (error) { }
 
 	if (tweetsObj.length == 0 || forceRetrieve == true){
+		tweetsObj = []; //Empty list when forcing to retrieve the data again
 		usersToRetrieve = userList.slice();
 	}
 	else {
@@ -49,7 +50,6 @@ async function getTweets(forceRetrieve = false) {
 }
 
 async function retrieveTweets(users) {
-	const Logic = require("./Logic");
 	const TweetIt = require("./TweetIt");
 	const tweetIt = new TweetIt();
 	let tweetsObj = [];
@@ -57,9 +57,8 @@ async function retrieveTweets(users) {
 	for (let user of users) {
 		let tweetList = [];
 		console.log(`Retrieving user ${user}`);
-		let tweets = await tweetIt.getText(user);
-		let cleanTweets = await Logic.postCleanup(tweets, user);
-		cleanTweets.forEach(cleanTweet => {
+		let tweets = await tweetIt.getText(user, true);
+		tweets.forEach(cleanTweet => {
 			if (cleanTweet.length > 1) {
 				tweetList.push(cleanTweet);
 			}
