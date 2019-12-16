@@ -4,7 +4,8 @@
   "description": "TweetIt",
   "main": "TweetIt.js",
   "engines": {
-    "node": "10.16.3"
+    "node": "10.16.3",
+    "npm": "6.9.0"
   },
   "dependencies": {
     "@tensorflow-models/knn-classifier": "^1.2.1",
