@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "TweetIt",
   "main": "TweetIt.js",
+  "engines": {
+    "node": ""
+  },
   "dependencies": {
     "@tensorflow-models/knn-classifier": "^1.2.1",
     "@tensorflow-models/universal-sentence-encoder": "^1.2.0",
