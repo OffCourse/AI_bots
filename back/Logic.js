@@ -136,3 +136,20 @@ async function cleanPost(post, username, hashtags) {
 	//post = post.replace(/\s+/g, " ");											// replace multiple blank spaces with one
 	return post;
 }
+
+exports.addUser = async (username) => {
+	let userList = require("../data/users.json");
+	const dataRetriever = require("../back/DataRetriever");
+	let newUser = [];
+	newUser.push(username);
+	let Succeed = await dataRetriever.retrieveTweets(newUser);
+	if (Succeed != null){
+		if (!userList.some(element => element == username)) {
+			console.log("Adding "+ username + " to the database.");
+			userList.push(username);
+			const fs = require("fs");
+			fs.writeFile("./data/users.json", JSON.stringify(userList), function () { });
+			dataRetriever.getTweets();
+		} else console.log(username + " is already added to the database.");		
+	}
+};

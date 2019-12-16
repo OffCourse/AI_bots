@@ -6,19 +6,18 @@ exports.getTweets = async (forceRetrieve = false) => {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
 	const userList = require("../data/users.json");
-	let usersToRetrieve = []; 	// Users yet to retrieve from the API
-	let tweetsObj = [];			// Object containing the usernames and their tweets
+	let usersToRetrieve = []; // Users yet to retrieve from the API
+	let tweetsObj = []; // Object containing the usernames and their tweets
 
 	try {
 		tweetsObj = await require(loadFilePath);
 		// eslint-disable-next-line no-empty
-	} catch (error) { }
+	} catch (error) {}
 
-	if (tweetsObj.length == 0 || forceRetrieve == true){
+	if (tweetsObj.length == 0 || forceRetrieve == true) {
 		tweetsObj = []; //Empty list when forcing to retrieve the data again
 		usersToRetrieve = userList.slice();
-	}
-	else {
+	} else {
 		// Check for each user if their data is already in the file
 		// If not, the data of the specified user will be retrieved
 		userList.forEach(user => {
@@ -31,7 +30,7 @@ exports.getTweets = async (forceRetrieve = false) => {
 	// If there are users that need to be retrieved from the API,
 	// Their data is appended to tweetsObj
 	if (usersToRetrieve.length > 0) {
-		let newTweetsObj = await retrieveTweets(usersToRetrieve);
+		let newTweetsObj = await this.retrieveTweets(usersToRetrieve);
 		newTweetsObj.forEach(tweetObj => {
 			tweetsObj.push(tweetObj);
 		});
@@ -47,9 +46,9 @@ exports.getTweets = async (forceRetrieve = false) => {
 	});
 
 	return tweets;
-}
+};
 
-async function retrieveTweets(users) {
+exports.retrieveTweets = async (users) => {
 	const TweetIt = require("./TweetIt");
 	const tweetIt = new TweetIt();
 	let tweetsObj = [];
@@ -57,20 +56,25 @@ async function retrieveTweets(users) {
 	for (let user of users) {
 		let tweetList = [];
 		console.log(`Retrieving user ${user}`);
-		let tweets = await tweetIt.getText(user, true);
-		tweets.forEach(cleanTweet => {
-			if (cleanTweet.length > 1) {
-				tweetList.push(cleanTweet);
-			}
-		});
-		tweetsObj.push({ username: user, tweets: tweetList });
+		try {
+			let tweets = await tweetIt.getText(user, true);
+			tweets.forEach(cleanTweet => {
+				if (cleanTweet.length > 1) {
+					tweetList.push(cleanTweet);
+				}
+			});
+			tweetsObj.push({ username: user, tweets: tweetList });
+		} catch (error) {
+			console.log(user+ " could not be found.");
+			return null;
+		}
 	}
 	return tweetsObj;
-}
+};
 
 async function saveTweets(tweetList, filePath) {
 	console.log("begin writing");
 	const fs = require("fs");
-	fs.writeFile(filePath, JSON.stringify(tweetList), function () { });
+	fs.writeFile(filePath, JSON.stringify(tweetList), function() {});
 	console.log("done");
 }

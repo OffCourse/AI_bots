@@ -59,6 +59,11 @@ app.post("/api/knn", async function (req, res) {
 	res.json(result);
 });
 
+app.post("/api/addUser", async function (req, res) {
+	const username = req.body.username;
+	Logic.addUser(username);
+});
+
 app.put("/", (req, res) => {
 	return res.send("Received a PUT HTTP method");
 });
