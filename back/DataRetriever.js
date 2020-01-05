@@ -1,7 +1,3 @@
-// getTweets().then(function (result) {
-// 	console.log(result);
-// });
-
 exports.getTweets = async (forceRetrieve = false) => {
 	const saveFilePath = "./data/tweets.json";
 	const loadFilePath = "." + saveFilePath;
@@ -12,7 +8,7 @@ exports.getTweets = async (forceRetrieve = false) => {
 	try {
 		tweetsObj = await require(loadFilePath);
 		// eslint-disable-next-line no-empty
-	} catch (error) {}
+	} catch (error) { }
 
 	if (tweetsObj.length == 0 || forceRetrieve == true) {
 		tweetsObj = []; //Empty list when forcing to retrieve the data again
@@ -58,14 +54,14 @@ exports.retrieveTweets = async (users) => {
 		console.log(`Retrieving user ${user}`);
 		try {
 			let tweets = await tweetIt.getText(user, true);
-			tweets.forEach(cleanTweet => {
-				if (cleanTweet.length > 1) {
-					tweetList.push(cleanTweet);
+			tweets.forEach(tweet => {
+				if (tweet.length > 1) {
+					tweetList.push(tweet);
 				}
 			});
 			tweetsObj.push({ username: user, tweets: tweetList });
 		} catch (error) {
-			console.log(user+ " could not be found.");
+			console.log(user + " could not be found.");
 			return null;
 		}
 	}
@@ -75,6 +71,6 @@ exports.retrieveTweets = async (users) => {
 async function saveTweets(tweetList, filePath) {
 	console.log("begin writing");
 	const fs = require("fs");
-	fs.writeFile(filePath, JSON.stringify(tweetList), function() {});
+	fs.writeFile(filePath, JSON.stringify(tweetList), function () { });
 	console.log("done");
 }
