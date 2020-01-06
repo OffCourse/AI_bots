@@ -64,9 +64,11 @@ function shapeData(data, target) {
 
 
 
-function getRecommendations(targetLabel) {
+async function getRecommendations(targetLabel) {
 	targetLabel = targetLabel.toLowerCase();
-	const rawData = require("../cleaned_tweets.json");
+	const dataRetriever = require("./DataRetriever");
+	await dataRetriever.getTweets();
+	const rawData = require("../data/tweets.json");
 	const preparedData = prepareData(rawData, targetLabel);
 	//const shapedData = shapeData(preparedData.data, preparedData.target);
 	//const recommendations = evaluateKmeans(shapedData.data, shapedData.target, 25);
