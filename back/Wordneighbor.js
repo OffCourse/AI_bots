@@ -1,7 +1,3 @@
-getRecommendations("going to waag for some coding and ai related stuff.", 2).then(function (result) {
-	console.log(result);
-});
-
 function prepareData(rawData) {
 	let dataList = [];
 	let count = 0;
@@ -54,7 +50,7 @@ function prepareTarget(dataList, targetLabel) {
 	return target;
 }
 
-async function getRecommendations(targetTweet, recommendationsPerWord = 1) {
+async function getRecommendations(targetTweet, recommendationsPerWord = 2) {
 	targetTweet = targetTweet.toLowerCase();
 
 	const Logic = require("./Logic");
