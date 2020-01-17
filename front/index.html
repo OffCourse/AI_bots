@@ -19,52 +19,70 @@
 					<option selected="selected">3</option>
 					<option>4</option>
 				</select>
-      </div>
-      
-      <div>
-        <button onclick="onChange('random');onChange('frequentie');onChange('knn');onChange('KMeans');"  style="width: 150px; height: 50px; margin-top: 10px;">Generate hashtags</button>
-      </div>
-        
+			</div>
+
+			<div>
+				<button
+					onclick="onChange('random');onChange('frequentie');onChange('knn');onChange('KMeans');"
+					style="width: 150px; height: 50px; margin-top: 10px;"
+				>
+					Generate hashtags
+				</button>
+			</div>
+
 			<div class="card">
+				<img id ="imgrandom" src="cloud.png" style="position:absolute; top: -150px; left: 200px; width:200; height: 200;opacity: 0;"/>
 				<img src="RobertRandom.jpg" />
-        <!-- <a href="randomRobert.html"><span></span></a> -->
-        <a onclick="onChange('random')"><span></span></a>
+				<!-- <a href="randomRobert.html"><span></span></a> -->
+				<a onclick="onChange('random')"><span></span></a>
 				<div class="container">
 					<h2 style="text-align: center"><b>Robert Random</b></h2>
-          <p id="resultrandom">The random recommendations will be shown here</p>
+					<p id="resultrandom">
+						The random recommendations will be shown here
+					</p>
 				</div>
 			</div>
 
 			<div class="card">
 				<img src="Fred-Frequentie.png" />
-        <!-- <a href="FrequentieFred.html"><span></span></a> -->
-        <a onclick="onChange('frequentie')"><span></span></a>
+				<!-- <a href="FrequentieFred.html"><span></span></a> -->
+				<img id ="imgfrequentie" src="cloud.png" style="position:absolute; top: -150px; left: 200px; width:200; height: 200;opacity: 0;"/>
+				<a onclick="onChange('frequentie')"><span></span></a>
 				<div class="container">
 					<h2 style="text-align: center"><b>Frequentie Fred</b></h2>
-					<p id="resultfrequentie">The word frequentie recommendations will be shown here</p>
+					<p id="resultfrequentie">
+						The word frequentie recommendations will be shown here
+					</p>
 				</div>
 			</div>
 
 			<div class="card">
 				<img src="KNN-Karel.png" />
-        <!-- <a href="KNNKarel.html"><span></span></a> -->
-        <a onclick="onChange('knn')"><span></span></a>
+				<!-- <a href="KNNKarel.html"><span></span></a> -->
+				<img id ="imgknn" src="cloud.png" style="position:absolute; top: -150px; left: 200px; width:200; height: 200;opacity: 0;"/>
+				<a onclick="onChange('knn')"><span></span></a>
 				<div class="container">
 					<h2 style="text-align: center"><b>KNN Karel</b></h2>
-					<p id="resultknn">The KNN recommendations will be shown here</p>
+					<p id="resultknn">
+						The KNN recommendations will be shown here
+					</p>
 				</div>
 			</div>
 
 			<div class="card">
 				<img src="K-Means-Kees.jpg" />
-        <!-- <a href="K-MeansKees.html"><span></span></a> -->
-        <a onclick="onChange('KMeans')"><span></span></a>
+				<!-- <a href="K-MeansKees.html"><span></span></a> -->
+				<img id ="imgKMeans" src="cloud.png" style="position:absolute; top: -150px; left: 200px; width:200; height: 200;opacity: 0;"/>
+				<a onclick="onChange('KMeans')"><span></span></a>
 				<div class="container">
 					<h2 style="text-align: center"><b>KMeans Kees</b></h2>
-					<p id="resultKMeans">The KMeans recommendations will be shown here</p>
+					<p id="resultKMeans">
+						The KMeans recommendations will be shown here
+					</p>
 				</div>
-      </div>
+			</div>
 		</div>
+
 
 		<!-- <div class="card">
 
@@ -76,8 +94,7 @@
       </div>
     </div> -->
 
-    <script src="Recommend.js">
-    </script>
+		<script src="Recommend.js"></script>
 	</body>
 
 	<style>
@@ -130,5 +147,6 @@
 			height: 100px;
 			font-size: 30px;
 		}
+		
 	</style>
 </html>

@@ -34,6 +34,7 @@ async function onChange(algorithm) {
 	var start = "";
 	var hashtags = [];
 	if (text.split(" ").length > 5) {
+		document.getElementById("img"+ algorithm).style.opacity  = 1;
 		const amountOfTags = document.getElementById("amountOfTags").value;
 		// console.log("Spaghetti");
 
@@ -67,6 +68,7 @@ async function onChange(algorithm) {
 				} else result += hashtags[index] + " ";
 			}
 			document.getElementById("result" + algorithm).innerHTML = result;
+			document.getElementById("img"+ algorithm).style.opacity  = 0;
 			// for (let index = 0; index < amountOfTags; index++) {
 			// 	let button = document.createElement("BUTTON");
 			// 	button.innerHTML = hashtags[index].key;
