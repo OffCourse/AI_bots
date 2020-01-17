@@ -43,10 +43,6 @@ async function onChange(algorithm) {
 		//todo make api port dynamic
 		console.log(algorithm);
 		let url = "http://localhost:4000/api/" + algorithm;
-		if (algorithm === "Random") {
-			console.log("it's Random");
-			return;
-		}
 		console.log(url);
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -65,7 +61,7 @@ async function onChange(algorithm) {
 			for (let index = 0; index < amountOfTags; index++) {
 				if (algorithm == "knn") {
 					result += hashtags[index].key + " ";
-				} else result += hashtags[index] + " ";
+				} else result += "#" + hashtags[index] + " ";
 			}
 			document.getElementById("result" + algorithm).innerHTML = result;
 			document.getElementById("img"+ algorithm).style.opacity  = 0;

@@ -85,13 +85,14 @@ app.post("/api/knn", async function (req, res) {
 });
 
 app.post("/api/random", async function (req, res) {
-
+	const randomRecommendations = require("./RandomRecommendations");
+	const result = await randomRecommendations.getRecommendations();
 	res.json(result);
 });
 
 app.post("/api/frequentie", async function (req, res) {
-
-
+	const wordNeighbor = require("./Wordneighbor");
+	const result = await wordNeighbor.getRecommendations(req.body.tweet);
 	res.json(result);
 });
 
