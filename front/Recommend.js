@@ -2,33 +2,33 @@ function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
-async function addUser() {
-	const text = document.getElementById("usernameTextarea").value;
+// async function addUser() {
+// 	const text = document.getElementById("usernameTextarea").value;
 
-	const username = JSON.stringify({ username: text });
-	console.log("Checking if " + username + " is a valid username.");
-	//todo make api port dynamic
-	const url = "http://localhost:4000/api/addUser";
-	const response = await fetch(url, {
-		method: "POST", // *GET, POST, PUT, DELETE, etc.
-		mode: "cors", // no-cors, *cors, same-origin
-		headers: {
-			"Content-Type": "application/json"
-			// 'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: username
-	});
-}
+// 	const username = JSON.stringify({ username: text });
+// 	console.log("Checking if " + username + " is a valid username.");
+// 	//todo make api port dynamic
+// 	const url = "http://localhost:4000/api/addUser";
+// 	const response = await fetch(url, {
+// 		method: "POST", // *GET, POST, PUT, DELETE, etc.
+// 		mode: "cors", // no-cors, *cors, same-origin
+// 		headers: {
+// 			"Content-Type": "application/json"
+// 			// 'Content-Type': 'application/x-www-form-urlencoded',
+// 		},
+// 		body: username
+// 	});
+// }
 
 async function onChange(algorithm) {
 	// const axios = require("axios");
-	let buttonGroup = document.querySelector(".btn-group");
+	// let buttonGroup = document.querySelector(".btn-group");
 
-	let child = buttonGroup.lastElementChild;
-	while (child) {
-		buttonGroup.removeChild(child);
-		child = buttonGroup.lastElementChild;
-	}
+	// let child = buttonGroup.lastElementChild;
+	// while (child) {
+	// 	buttonGroup.removeChild(child);
+	// 	child = buttonGroup.lastElementChild;
+	// }
 
 	const text = document.getElementById("textarea").value;
 	var start = "";
@@ -45,7 +45,7 @@ async function onChange(algorithm) {
 		if (algorithm === "Random") {
 			console.log("it's Random");
 			return;
-		} 
+		}
 		console.log(url);
 		const response = await fetch(url, {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -60,16 +60,23 @@ async function onChange(algorithm) {
 		response.json().then(json => {
 			hashtags = json;
 			console.log(hashtags);
+			let result = "";
 			for (let index = 0; index < amountOfTags; index++) {
-				let button = document.createElement("BUTTON");
-				button.innerHTML = hashtags[index].key;
-				button.onclick = function() {
-					button.innerHTML =
-						hashtags[getRandomInt(hashtags.length)].key;
-				};
-				buttonGroup.appendChild(button);
+				if (algorithm == "knn") {
+					result += hashtags[index].key + " ";
+				} else result += hashtags[index] + " ";
 			}
+			document.getElementById("result" + algorithm).innerHTML = result;
+			// for (let index = 0; index < amountOfTags; index++) {
+			// 	let button = document.createElement("BUTTON");
+			// 	button.innerHTML = hashtags[index].key;
+			// 	button.onclick = function() {
+			// 		button.innerHTML =
+			// 			hashtags[getRandomInt(hashtags.length)].key;
+			// 	};
+			// 	buttonGroup.appendChild(button);
+			// }
 		});
 	}
-	document.getElementById("result").innerHTML = text + start;
+	//document.getElementById("result").innerHTML = text + start;
 }
